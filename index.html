@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="./bt/Settings.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DESDROID Rock Dodge</title>
+  </head>
+  <body>
+    <!-- <div>cargame</div> -->
+    
+    <div class="score" id="score">Score: 0</div>
+    <div class="score hs" id="highscore">High Score: 0</div>
+    <canvas id="app"></canvas>
+    <div class="controls arrows">
+      <div id="ArrowUp" class="arrow">&uparrow;</div>
+      <div id="ArrowDown" class="arrow">&downarrow;</div>
+      <div id="ArrowLeft" class="arrow">&leftarrow;</div>
+      <div id="ArrowRight" class="arrow">&rightarrow;</div>
+    </div>
+    <div class="controls keys">
+      <div id="x" class="arrow">X</div>
+      <div id="p" class="arrow">P</div>
+      <div id="m" class="arrow">M</div>
+    </div>
+    <wrapper>
+      <div id="panel" class="panel">
+        <!-- <div class="bty1 bty">bty1</div>
+        <div class="bty2 bty">bty2</div>
+        <div class="btyx1 bty">btyx1</div>
+        <div class="btyx2 bty">btyx2</div> -->
+        <div class="fm m">
+          <div class="im">
+            <div class="message"  >
+              Space bar : : Start game
+            </div>
+            <div class="message"  >
+              Arrows : : To control
+            </div>
+          </div>
+        </div>
+        <div class="sm m">
+          <div class="im">
+            <div class="message"  >
+              Space bar : : To pause
+            </div>
+            <div class="message"  >
+              X : : To recoil
+            </div>
+            <div class="message"  >
+              M : : Toogle music
+            </div>
+          </div>
+        </div>
+        
+        
+        <div  id="play" class="play">
+          <div class=" mute none" id="ispaused" style="--left:30%;top:24%;">
+            M : : Toogle music 
+          </div> 
+          <div class="lw"><img src="./bt/set.png" class="logo" id="logo" alt=""></div>
+          <div class="t s" id="s">START</div>
+          <div class="t" id="t">DESDROID Rock Dodge</div>
+          <div class="bre">
+            <button id="restart" class="message re r">
+              START
+            </button>
+            <div id ="rh"  class="message re rh">
+              Reset High Score
+            </div>
+            <div id ="cac"  class="message re rh">
+              Choose a car
+            </div>
+          </div>
+          
+        </div>
+        <!-- <img src="./bt/logo.png"  id="logo2" alt=""> -->
+        
+      </div>
+    </wrapper>
+    <div id="carc" class="carc none">
+      <div class="ic">
+        <div id="/bt/benz.glb" class="car"><img src="./bt/benz2.png" alt=""><div class="carname">Benz</div></div>
+        <!-- <div id="/bt/lambo.glb" class="car"><img src="./bt/lambo2.png" alt=""><div class="carname">Lambo</div></div> -->
+        <div id="/bt/alpha.glb" class="car"><img src="./bt/alpha2.png" alt=""><div class="carname">Alpha</div></div>
+        <div id="/bt/cybertruck.glb" class="car"><img src="./bt/cybertruck.png" alt=""><div class="carname">Cyber Truck</div></div>
+        <div id="cb" class="message cback">X</div>
+      </div>
+    </div>
+    <div class="intro" id="intro">
+      <img src="./bt/set.png" class="ilogo"  alt="">
+     </div>
+    <script type="module" src="/main.js"></script>
+  </body>
+</html>
