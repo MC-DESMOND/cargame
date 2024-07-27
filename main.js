@@ -19,7 +19,7 @@ import bt7 from './bt/bt7.png'
 import bt8 from './bt/bt8.png'
 import bt9 from './bt/bt9.png'
 import bt0 from './bt/bt0.png'
-
+var running = false
 const panel = document.getElementById('panel')
 const audio = document.createElement("audio")
 const score = document.getElementById("score")
@@ -28,6 +28,7 @@ const mute = document.getElementById("ispaused")
 const cac = document.getElementById("cac")
 const carc = document.getElementById("carc")
 const cb = document.getElementById("cb")
+const intro = document.getElementById("intro")
 cb.addEventListener("click",e=>{
   carc.classList.add("none")
 })
@@ -135,7 +136,17 @@ const groundlaw = new cannon.Body({
 })
 law.addBody(groundlaw)
 
-
+function load(bool)
+{
+  if (bool){
+    intro.classList.remove("none")
+  }else{
+    intro.classList.add("none")
+  }
+  audio.play()
+  running = !bool
+}
+load(true)
 class BUILDINGS{
   buildings = []
   buildingslaw = []
@@ -414,6 +425,7 @@ class YOURS{
     this.choosers.forEach((cr,index) =>{
 
       cr.addEventListener("click",e=>{
+        load(true)
         this.choose(cr.id)
         
       })
@@ -471,7 +483,7 @@ class YOURS{
             hits = 0
         }
       })
-      document.getElementById("intro").classList.add('none')
+      load(false)
     },function ( xhr ) {
     
       console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded of car' );
@@ -493,7 +505,7 @@ var ap = false
 groundlaw.position.z = l
 
 function controlCar(e){
-  var leftspeed = 30
+  if(running){var leftspeed = 30
   var maxang = 0.1 
   var anginc = (30/700)*maxang
   console.log(e)
@@ -543,13 +555,27 @@ function controlCar(e){
       }
       ap = !ap
     }
-  }
+  }}
 }
-document.querySelectorAll(".arrow").forEach(ar=>{
+document.querySelectorAll(".arrowk").forEach(ar=>{
+  var int
+  ar.addEventListener("touchstart",e=>{
+    int = setInterval(() => {
+      controlCar(ar.id)
+    }, 100);
+    
+  })
+  ar.addEventListener("touchend",e=>{
+    clearInterval(int)
+    
+  })
+})
+document.querySelectorAll(".akey").forEach(ar=>{
+
   ar.addEventListener("click",e=>{
     controlCar(ar.id)
-   
   })
+
 })
 
 function animate(){

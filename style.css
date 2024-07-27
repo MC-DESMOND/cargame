@@ -94,7 +94,6 @@ wrapper{
 .score{
   text-align: center;
   font-size: 30px;
-  margin-top: 20px;
   font-weight: bolder;
   color: yellow;
   position: fixed;
@@ -218,8 +217,8 @@ wrapper{
 }
 .mute{
   padding: 20px;
-  color:rgb(255, 255, 255);
-  border:2px solid rgba(0, 255, 255, 0.801) ;
+  color:rgba(255, 255, 255, 0.712);
+  border:2px solid rgba(0, 255, 255, 0.479) ;
   font-weight: bolder;
   border-radius: 5px;
   position: absolute;
@@ -308,6 +307,7 @@ wrapper{
   left: 20px;
 }
 .arrow{
+  user-select: none;
   display: grid;
   place-items: center;
   font-size: 40px;
@@ -335,6 +335,10 @@ wrapper{
   }
   .bre{
    flex-direction: row;
+   gap:10px;
+  }
+  .re{
+    padding-inline: 10px;
   }
   .play{
     gap: 30px;
