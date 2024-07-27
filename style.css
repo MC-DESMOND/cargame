@@ -245,32 +245,34 @@ wrapper{
 .ic{
   display:flex;
   width: 100%;
-  max-width: 1600px;
+  max-width: 1300px;
   gap: 40px;
   overflow-x: auto;
+  position: relative;
+  padding: 10px;
+  overflow-y: hidden;
 }
 .car{
-  border: 4px solid cyan;
-  transition: background-color 0.3s ease-in-out;
+  
+  transition: scale 0.3s ease-in-out;
   border-radius: 10px;
-  min-width: 250px;
-  overflow: hidden;
-  /* width: 400px; */ 
+  width: fit-content;
 
 }
 .car img{
-  width: 100%;
-  height: 80%;
+  height: 250px;
+  box-sizing: border-box;
+  /* object-fit: contain; */
   border-radius: inherit;
 }
 .car:hover{
-  background-color: rgba(0, 255, 255, 0.103);
+  scale: 1.02;
 }
 .carname{
   width: 100%;
   text-align: center;
   padding-block: 10px;
-  font-size: 40px;
+  font-size: 25px;
   font-weight: bold;
 }
 
@@ -281,7 +283,9 @@ wrapper{
   height: fit-content;
   display: block;
   background-color: black;
-  position: absolute;
+  position: fixed;
+  right: 20px;
+  top: 20px;
   
 }
 
@@ -354,6 +358,14 @@ wrapper{
     margin-block: 20px;
     display: none;
   }
+}
+*::-webkit-scrollbar{
+  background-color: transparent;
+  height: 10px;
+}
+*::-webkit-scrollbar-thumb{
+  background-color: rgba(0, 255, 255, 0.219);
+  border-radius: 5px;
 }
 
 .none{

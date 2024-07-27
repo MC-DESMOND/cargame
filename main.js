@@ -147,6 +147,14 @@ function load(bool)
   running = !bool
 }
 load(true)
+function Recoil(){
+  if (you){you.rotation.y  = 0 
+  you.rotation.x  = 0 
+  you.rotation.z  = 0 
+  you.position.z = yi
+  mod.updateLaw(yourlaw,you)
+}}
+
 class BUILDINGS{
   buildings = []
   buildingslaw = []
@@ -257,13 +265,6 @@ function start()
         draw();} 
 
 
-function Recoil(){
-  if (you){you.rotation.y  = 0 
-  you.rotation.x  = 0 
-  you.rotation.z  = 0 
-  you.position.z = yi
-  mod.updateLaw(yourlaw,you)
-}}
 
 
 function buildTree(xmin){
@@ -303,6 +304,7 @@ function topause(bool,crashed = false){
         mod.updateLaw(yourlaw,you)
       }
       reloadscore(0)
+      Recoil()
     }
 
     panel.style.height = "0"
@@ -439,9 +441,9 @@ class YOURS{
     
     this.choosers.forEach((cr,index) =>{
       if (cr.id == el.id){
-        cr.style.borderWidth = '4px'
+        cr.style.filter = "brightness(1)"
       }else{
-        cr.style.borderWidth = '0px'
+        cr.style.filter = "brightness(0.6)"
       }
     })
 
@@ -492,7 +494,7 @@ class YOURS{
   }
 }
 
-var youl = new YOURS('car')
+var youl = new YOURS('car-img')
 var a = Array(...youl.choosers).find(e=>e.id.includes("alpha"))
 youl.choose(a.id)
 
