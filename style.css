@@ -225,6 +225,10 @@ wrapper{
   right: 20px;
   top: 20px;
 }
+.akey{
+  user-select: none;
+  
+}
 
 .carc{
   position: fixed;
@@ -299,13 +303,14 @@ wrapper{
   width: fit-content;
   gap: 20px;
 }
+.keys{
+  left: 20px;
+}
 .arrows{
   right: 20px;
   
 }
-.keys{
-  left: 20px;
-}
+
 .arrow{
   user-select: none;
   display: grid;

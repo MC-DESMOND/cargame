@@ -570,7 +570,8 @@ document.querySelectorAll(".arrowk").forEach(ar=>{
     
   })
 })
-document.querySelectorAll(".akey").forEach(ar=>{
+
+document.querySelectorAll(".arrow").forEach(ar=>{
 
   ar.addEventListener("click",e=>{
     controlCar(ar.id)
