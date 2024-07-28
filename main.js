@@ -30,11 +30,15 @@ const carc = document.getElementById("carc")
 const cb = document.getElementById("cb")
 const intro = document.getElementById("intro")
 cb.addEventListener("click",e=>{
+  load(true)
   carc.classList.add("none")
 })
 cac.addEventListener("click",e=>{
   carc.classList.remove("none")
+  load(false)
 })
+
+
 const pauseshow = document.getElementById("s")
 var re = false;
 const restart = document.getElementById("restart")
@@ -72,8 +76,11 @@ const view = 50000
 var lll = 700
 const canvas = document.querySelector("#app")
 const camera = new three.PerspectiveCamera(75, window.innerWidth/window.innerHeight,0.1,view)
+const carccamera = new three.PerspectiveCamera(75, window.innerWidth/window.innerHeight,0.1,view)
 const display  = new three.WebGLRenderer({canvas:canvas})
+const carcdisplay = new three.WebGLRenderer({canvas:carc})
 const control = new OrbitControls(camera,display.domElement)
+const carccontrol = new OrbitControls(carccamera,carcdisplay.domElement)
 const rh = document.getElementById("rh")
 var paused = false
 const audio2 = document.createElement("audio")
@@ -205,28 +212,6 @@ class BUILDINGS{
   
 // },5000)
 
-class OBJ{
-  loader = new OBJLoader();
-  object
-  constructor(name , handler){
-    this.loader.load( name,
-      (object)=>{
-        this.object = object
-        handler(this.object)
-      },
-      function ( xhr ) {
-
-        console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
-    
-      },
-      function ( error ) {
-
-        console.log( 'An error happened' );
-    
-      }
-    )
-  }
-}
 
 
 
@@ -564,7 +549,7 @@ document.querySelectorAll(".arrowk").forEach(ar=>{
   ar.addEventListener("touchstart",e=>{
     int = setInterval(() => {
       controlCar(ar.id)
-    }, 100);
+    }, 1);
     
   })
   ar.addEventListener("touchend",e=>{
