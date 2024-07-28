@@ -249,8 +249,10 @@ wrapper{
   gap: 40px;
   overflow-x: auto;
   position: relative;
-  padding: 10px;
+  padding: 30px;
   overflow-y: hidden;
+  background-color: black;
+  border-radius: 20px;
 }
 .car{
   

@@ -443,7 +443,7 @@ class YOURS{
       if (cr.id == el.id){
         cr.style.filter = "brightness(1)"
       }else{
-        cr.style.filter = "brightness(0.6)"
+        cr.style.filter = "brightness(0.4)"
       }
     })
 
