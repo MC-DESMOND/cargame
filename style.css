@@ -35,6 +35,20 @@ body{
   padding: 0;
   margin: 0;
 }
+.exw{
+  position: fixed;
+  display: flex;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  z-index:-1;
+}
+.exp{
+  display: block;
+  width: 100%;
+  /* height: 120%; */
+  scale: 3;
+}
 wrapper{
   position: fixed;
   width: 100%;
@@ -47,7 +61,8 @@ wrapper{
   width: 100%;
   height: 100%;
   align-self: center;
-  background-color: rgba(0, 0, 0, 0.705);
+  background-color: rgba(0, 0, 0, 0.734);
+  background: linear-gradient(125deg, #002525 , rgba(0, 0, 0, 0.733));
   display: block;
   overflow: hidden;
   backdrop-filter: blur(10px);
@@ -318,6 +333,7 @@ wrapper{
 }
 
 .arrow{
+  overflow: hidden;
   user-select: none;
   display: grid;
   place-items: center;
@@ -326,6 +342,8 @@ wrapper{
   border: 2px solid rgba(0, 255, 255, 0.281);
   border-radius: 50%;
   width: 50px;
+  box-sizing: border-box;
+  padding: 5px;
   font-weight: bolder;
   height: 50px;
   backdrop-filter: blur(10px);

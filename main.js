@@ -4,9 +4,7 @@ import * as three from 'three'
 import * as cannon from 'cannon-es'
 import groundImg from './bt/road.png'
 import rockImg from './bt/rock.png'
-import * as mod from './module'
 import CITYView from './bt/bg.png'
-import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
 import bt1 from './bt/bt1.png'
@@ -29,15 +27,7 @@ const cac = document.getElementById("cac")
 const carc = document.getElementById("carc")
 const cb = document.getElementById("cb")
 const intro = document.getElementById("intro")
-cb.addEventListener("click",e=>{
-  load(true)
-  carc.classList.add("none")
-})
-cac.addEventListener("click",e=>{
-  carc.classList.remove("none")
-  load(false)
-})
-
+const exp = document.getElementById("exp")
 
 const pauseshow = document.getElementById("s")
 var re = false;
@@ -76,11 +66,8 @@ const view = 50000
 var lll = 700
 const canvas = document.querySelector("#app")
 const camera = new three.PerspectiveCamera(75, window.innerWidth/window.innerHeight,0.1,view)
-const carccamera = new three.PerspectiveCamera(75, window.innerWidth/window.innerHeight,0.1,view)
 const display  = new three.WebGLRenderer({canvas:canvas})
-const carcdisplay = new three.WebGLRenderer({canvas:carc})
 const control = new OrbitControls(camera,display.domElement)
-const carccontrol = new OrbitControls(carccamera,carcdisplay.domElement)
 const rh = document.getElementById("rh")
 var paused = false
 const audio2 = document.createElement("audio")
@@ -88,6 +75,25 @@ document.body.appendChild(audio2)
 audio2.src = '/bt/carcrash.wav'
 audio2.volume -= 0.1
 control.update()
+
+function updateLaw(LAW,OBJECT){
+  // requestAnimationFrame(e=>updateLaw(LAW,OBJECT))
+  LAW.position.copy(OBJECT.position)
+  LAW.quaternion.copy(OBJECT.quaternion)
+
+  OBJECT.position.copy(LAW.position)
+  OBJECT.quaternion.copy(LAW.quaternion)
+}
+function updateObj(LAW,OBJECT){
+  // requestAnimationFrame(e=>updateObj(LAW,OBJECT))
+  OBJECT.position.copy(LAW.position)
+  OBJECT.quaternion.copy(LAW.quaternion)
+
+  LAW.position.copy(OBJECT.position)
+  LAW.quaternion.copy(OBJECT.quaternion)
+
+  
+}
 // camera.position.setX(-1000)
 function setHighScore(num = 0){
   localStorage.setItem("High Score",num)
@@ -154,12 +160,13 @@ function load(bool)
   running = !bool
 }
 load(true)
+
 function Recoil(){
   if (you){you.rotation.y  = 0 
   you.rotation.x  = 0 
   you.rotation.z  = 0 
   you.position.z = yi
-  mod.updateLaw(yourlaw,you)
+  updateLaw(yourlaw,you)
 }}
 
 class BUILDINGS{
@@ -190,7 +197,7 @@ class BUILDINGS{
     building.position.z = 1-(((this.buildings.length)*(width+100))+width)
     building.position.y = (height/2)-ctop
 
-    mod.updateLaw(buildinglaw,building)
+    updateLaw(buildinglaw,building)
     scene.add(building)
     law.addBody(buildinglaw)
     this.buildingslaw.push(buildinglaw)
@@ -203,7 +210,7 @@ class BUILDINGS{
     if (this.buildingslaw[o].position.z > 0){
       this.buildingslaw[o].position.z = this.binp[0]
     }
-    mod.updateObj(this.buildingslaw[o],this.buildings[o])
+    updateObj(this.buildingslaw[o],this.buildings[o])
     }
   }
 }
@@ -212,6 +219,28 @@ class BUILDINGS{
   
 // },5000)
 
+// class OBJ{
+//   loader = new OBJLoader();
+//   object
+//   constructor(name , handler){
+//     this.loader.load( name,
+//       (object)=>{
+//         this.object = object
+//         handler(this.object)
+//       },
+//       function ( xhr ) {
+
+//         console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
+    
+//       },
+//       function ( error ) {
+
+//         console.log( 'An error happened' );
+    
+//       }
+//     )
+//   }
+// }
 
 
 
@@ -265,7 +294,7 @@ function buildTree(xmin){
     tree.position.z = 1-(((trees.length)*(width+300))+width)
     tree.position.y += ((height)+(height/2))-ctop
 
-    mod.updateLaw(treelaw,tree)
+    updateLaw(treelaw,tree)
     scene.add(tree)
     law.addBody(treelaw)
     trees.push(tree)
@@ -275,18 +304,20 @@ function buildTree(xmin){
   });
 }
 function topause(bool,crashed = false){
-  
+  var p = document.querySelectorAll(".p")
+  var addnp = function() {p.forEach(i=>i.classList.add("none"))}
+  var renp = function() {p.forEach(i=>i.classList.remove("none"))}
   if (bool){
+    panel.style.visibility = 'initial'
     panel.style.opacity = "1"
     pauseshow.innerText = "START"
     panel.style.height = "100%"
-    restart.classList.remove("none")
-    rh.classList.remove("none")
+    renp()
   }else{
     if (pauseshow.innerText.trim() == "crashed"){
       if(you){
         you.position.z = yi
-        mod.updateLaw(yourlaw,you)
+        updateLaw(yourlaw,you)
       }
       reloadscore(0)
       Recoil()
@@ -294,8 +325,8 @@ function topause(bool,crashed = false){
 
     panel.style.height = "0"
     panel.style.opacity = "0"
-    restart.classList.add("none")
-    rh.classList.add("none")
+    setTimeout(e=>{panel.style.visibility = 'hidden'},500)
+    addnp()
 
     if (!audio2.paused){
       audio2.pause()
@@ -325,7 +356,7 @@ function createEnys(){
   var l = lll
   eny.position.x = (1-((Math.random()*(l*2))))+l
 
-  mod.updateLaw(enylaw,eny)
+  updateLaw(enylaw,eny)
   scene.add(eny)
   law.addBody(enylaw)
   enys.push(eny)
@@ -365,7 +396,7 @@ function restarti(bool = false){
     you.position.z = yi
     you.position.x = 0
     you.position.y = 0
-    mod.updateLaw(yourlaw,you)
+    updateLaw(yourlaw,you)
   }
   
   Recoil()
@@ -376,7 +407,7 @@ restart.addEventListener("click",e=>restarti())
 rh.addEventListener("click",e=>{setHighScore(0);reloadscore(0)})
 //!  Main
 
-mod.updateLaw(groundlaw,ground)
+updateLaw(groundlaw,ground)
 const bnum = 50;
 var leftbs = new BUILDINGS(bnum,-2300)
 var rightbs= new BUILDINGS(bnum,2300)
@@ -407,6 +438,7 @@ class YOURS{
   choosers = []
   idid = {}
   current = 0
+  loading = false
   constructor(selector){
     this.choosers = document.querySelectorAll(`.${selector}`)
     this.choosers.forEach((cr,index) =>{
@@ -420,6 +452,7 @@ class YOURS{
     console.log(this.choosers)
   }
   choose(name){
+    this.loading = true
     var el = Array(...this.choosers).find(cr=>cr.id == name)
     console.log(el);
     this.LoadYou(el.id)
@@ -465,12 +498,22 @@ class YOURS{
             if (paused){}else{
               audio2.play() 
               topause(true,true)
+              exp.src = "./bt/explode2.gif"
+              exp.classList.remove("none")
+              
+              setTimeout(() => {
+                exp.classList.add("none")
+                
+                
+              }, 1500);
+              
             }
             
             hits = 0
         }
       })
-      load(false)
+      if(carc.classList.contains("none")){load(false)}
+      this.loading = false
     },function ( xhr ) {
     
       console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded of car' );
@@ -482,7 +525,14 @@ class YOURS{
 var youl = new YOURS('car-img')
 var a = Array(...youl.choosers).find(e=>e.id.includes("alpha"))
 youl.choose(a.id)
-
+cb.addEventListener("click",e=>{
+  if (youl.loading){}else{load(false)}
+  carc.classList.add("none")
+})
+cac.addEventListener("click",e=>{
+  load(true)
+  carc.classList.remove("none")
+})
 // LoadYou('/bt/lambo.glb')
 
 
@@ -490,15 +540,20 @@ tinp.reverse()
 var l =  -2000
 var ap = false
 groundlaw.position.z = l
-
+var  oit = yy=> setTimeout(() => {
+  yourlaw.quaternion.y = 0
+}, yy);
 function controlCar(e){
   if(running){var leftspeed = 30
-  var maxang = 0.1 
+  var maxang = 0.4 
   var anginc = (30/700)*maxang
+  
   console.log(e)
   
   if (you)
-  {  if (!paused){if (e == "ArrowRight"){
+  { 
+    
+    if (!paused){if (e == "ArrowRight"){
       if (yourlaw.position.x > 700){}else{
         if (yourlaw.quaternion.y > maxang ){}else{
           yourlaw.quaternion.y += anginc
@@ -542,6 +597,7 @@ function controlCar(e){
       }
       ap = !ap
     }
+    
   }}
 }
 document.querySelectorAll(".arrowk").forEach(ar=>{
@@ -549,7 +605,7 @@ document.querySelectorAll(".arrowk").forEach(ar=>{
   ar.addEventListener("touchstart",e=>{
     int = setInterval(() => {
       controlCar(ar.id)
-    }, 1);
+    }, 50);
     
   })
   ar.addEventListener("touchend",e=>{
@@ -569,10 +625,10 @@ document.querySelectorAll(".arrow").forEach(ar=>{
 function animate(){
   requestAnimationFrame(animate)
 
-  if (!paused){if(you)
+  if (!paused){if(you){
     if(yourlaw.position.z < 0){speed = -((yourlaw.position.z)/20)}else{
       speed = 20
-    }}else{
+    }}}else{
   speed = 0
   }
   // camera.position.z -= 3
@@ -602,7 +658,7 @@ function animate(){
   if (treeslaw[o].position.z > 0){
     treeslaw[o].position.z = 1-((((trees.length)*(treewidth+300))+treewidth))
   }
-  mod.updateObj(treeslaw[o],trees[o])
+  updateObj(treeslaw[o],trees[o])
   }
 
   if (enyslaw[0]){for (var o in enyslaw){
@@ -614,12 +670,12 @@ function animate(){
       enyslaw[o].position.x = (1-((Math.random()*(lll*2))))+lll
       reloadscore(iscore+1)
     }
-    mod.updateObj(enyslaw[o],enys[o])
+    updateObj(enyslaw[o],enys[o])
   }}
 
-  mod.updateObj(groundlaw,ground)
+  updateObj(groundlaw,ground)
   if (you)
-    mod.updateObj(yourlaw,you)
+    updateObj(yourlaw,you)
   
   
   camera.aspect = innerWidth/innerHeight

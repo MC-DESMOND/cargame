@@ -47,19 +47,19 @@
         
         <div  id="play" class="play">
           <div class=" mute none" id="ispaused">
-            M : : Toogle music 
+           Music paused
           </div> 
           <div class="lw"><img src="./bt/set.png" class="logo" id="logo" alt=""></div>
           <div class="t s" id="s">START</div>
           <div class="t" id="t">DESDROID Rock Dodge</div>
           <div class="bre">
-            <button id="restart" class="message re r">
+            <button id="restart" class="message re r p" >
               START
             </button>
-            <div id ="rh"  class="message re rh">
+            <div id ="rh"  class="message re rh p">
               Reset High Score
             </div>
-            <div id ="cac"  class="message re rh">
+            <div id ="cac"  class="message re rh p">
               Choose a car
             </div>
           </div>
@@ -69,10 +69,37 @@
         
       </div>
     </wrapper>
+    <div class="exw"><img src="./bt/explode2.gif" id="exp" class="exp none" alt=""></div>
     <div class="controls keys">
-      <div id="x" class="arrow akey">X</div>
-      <div id="p" class="arrow akey">P</div>
-      <div id="m" class="arrow akey">M</div>
+      <div id="x" class="arrow akey"><svg viewBox="0 0 435 417" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<rect width="435" height="417" fill="url(#pattern0_236_42)"/>
+<defs>
+<pattern id="pattern0_236_42" patternContentUnits="objectBoundingBox" width="1" height="1">
+<use xlink:href="#image0_236_42" transform="matrix(0.0106513 0 0 0.0111111 0.0206897 0)"/>
+</pattern>
+<image id="image0_236_42" width="90" height="90" xlink:href="data:image/png;base64,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"/>
+</defs>
+</svg>
+</div>
+      <div id="p" class="arrow akey"><svg height = "20px" viewBox="0 0 462 448" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="462" height="77.9487" fill="white"/>
+        <rect y="184.615" width="462" height="77.9487" fill="white"/>
+        <rect y="370.051" width="462" height="77.9487" fill="white"/>
+        </svg>
+        
+        </div>
+      <div id="m" class="arrow akey"><svg height = "30px" viewBox="0 0 903 815" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <rect x="394.09" y="81" width="508.91" height="653" fill="url(#pattern0_338_8)"/>
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M170.531 554.161H48.0913C21.5312 554.161 0 488.087 0 406.58C0 325.074 21.5311 259 48.0913 259H172.017L338.351 19.1861C362.365 -15.4375 416.684 1.55612 416.684 43.6928V771.609C416.684 813.745 362.366 830.739 338.351 796.116L170.531 554.161Z" fill="white"/>
+        <defs>
+        <pattern id="pattern0_338_8" patternContentUnits="objectBoundingBox" width="1" height="1">
+        <use xlink:href="#image0_338_8" transform="matrix(0.0111111 0 0 0.00865935 0 0.110329)"/>
+        </pattern>
+        <image id="image0_338_8" width="90" height="90" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFoAAABaCAYAAAA4qEECAAAACXBIWXMAAAsTAAALEwEAmpwYAAAB40lEQVR4nO2cS2rDQBBEtYpz8ijnyWLQhfK5RRmBDAaHENszPVXd9UDglal+SK0RGvWyGGOMMcYYY4wxxpgbAJwAvAP4Po7990lFFRTyA3gB8IFbNgCvCzkS+f8IyRdWNf8/QvKEVc1/R0hK2RL5HwhJJVsi/3F3bnicNvNuLpP/WPY8S5shu4PkC2tE2H2N2YMtso080S5+40dJdJjszpJ3PpeA0Cv60ka2kY7t4pq3UXlHB28jZCtljboUu7cRhYzyhYA4W5qCQJipC0yFgSjLEBgKBEGGEGYWiiqSZxaMapJnFI6qkiMFoLrkCBGw5LBH4DbgP7neeN/LoLOvdrsQlL2lkUwse0snmVB2XslEsvNLJpBdR/JE2fUkT5BdV3KgbEsOkG3J11h0AHDrSCH5Qt0WAi/vUkqud2bDj+AlJOc/s8EjOa9s8EnOJ5tYch7ZfjkbgLcbBOANNAF4S1gA3uQYgLftBsCwFw4EGYbCVCCIsnSFsTAQZnoK5oJAnC1dIRDImOazXwhlHTWvQ/2je6l5HcpjJKTmdWzCg1Fk5nU08VE/EvM6modXZRpnliW/xIC+LPklRk5myS8xRDVLfomxwFnyH6uRfen3dRyr0me/EM9vjDHGGGOMMcYYswRyBpias+umnbidAAAAAElFTkSuQmCC"/>
+        </defs>
+        </svg>
+        
+        </div>
     </div>
  
 
@@ -90,16 +117,17 @@
         <path fill-rule="evenodd" d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8"/>
       </svg></div>
     </div>
-    <canvas id="carc" class="carc">
-      <!-- <div class="ic">
+    <div id="carc" class="carc none">
+      <div class="ic">
         <div id="/bt/benz.glb" class="car"><img id="/bt/benz.glb" class="car-img" src="./bt/benz2.png" alt=""><div class="carname">Benz</div></div>
+        <!-- <div id="/bt/lambo.glb" class="car"><img class="car-img" src="./bt/lambo2.png" alt=""><div class="carname">Lambo</div></div> -->
         <div  class="car"><img class="car-img" id="/bt/alpha.glb" src="./bt/alpha2.png" alt=""><div class="carname">Alpha</div></div>
         <div  class="car"><img class="car-img" id="/bt/cybertruck.glb" src="./bt/cybertruck.png" alt=""><div class="carname">Cyber Truck</div></div>
         <div class="car"><img class="car-img" id="/bt/mersedes-benz_s65.glb"  src="./bt/mersedes-benz_s65.png" alt=""><div class="carname">Mersedes Benz s65</div></div>
         <div class="car"><img class="car-img" id="/bt/2013__mercedes-benz_amg_vision_gran_turismo.glb"  src="./bt/2013__mercedes-benz_amg_vision_gran_turismo.png" alt=""><div class="carname">Mercedes Benz amg Vision</div></div>
         <div id="cb" class="message cback">X</div>
-      </div> -->
-    </canvas>
+      </div>
+    </div>
     <div class="intro" id="intro">
       <img src="./bt/set.png" class="ilogo"  alt="">
      </div>
