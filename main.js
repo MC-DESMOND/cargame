@@ -6,13 +6,13 @@ import groundImg from './bt/road.png'
 import rockImg from './bt/rock.png'
 import CITYView from './bt/bg.png'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
-
+ 
 import bt1 from './bt/bt1.png'
 import bt2 from './bt/bt2.png'
 import bt3 from './bt/bt3.png'
 import bt4 from './bt/bt4.png'
 import bt5 from './bt/bt5.png'
-import bt6 from './bt/bt6.png'
+import bt6 from './bt/bt6.png' 
 import bt7 from './bt/bt7.png'
 import bt8 from './bt/bt8.png'
 import bt9 from './bt/bt9.png'
@@ -20,6 +20,7 @@ import bt0 from './bt/bt0.png'
 var running = false
 const panel = document.getElementById('panel')
 const audio = document.createElement("audio")
+const logo = document.getElementById("logo")
 const score = document.getElementById("score")
 const highscore = document.getElementById("highscore")
 const mute = document.getElementById("ispaused")
@@ -28,16 +29,15 @@ const carc = document.getElementById("carc")
 const cb = document.getElementById("cb")
 const intro = document.getElementById("intro")
 const exp = document.getElementById("exp")
-
+const pbar = document.getElementById("pbspan")
 const pauseshow = document.getElementById("s")
 var re = false;
 const restart = document.getElementById("restart")
 document.body.appendChild(audio)
-audio.src = '/bt/T.mp3'
+audio.src = '/bt/EJ.mp3'
 audio.volume -= 0.4
 audio.loop = true
 
-const treegltf2 = "bt/tree2.glb"
 const treegltf = "bt/tree2.glb"
 var buildingsTex = []
 buildingsTex.push(
@@ -64,7 +64,7 @@ var enywidth = 100
 const scene = new three.Scene();
 const view = 50000
 var lll = 700
-const canvas = document.querySelector("#app")
+const canvas = document.getElementById("app")
 const camera = new three.PerspectiveCamera(75, window.innerWidth/window.innerHeight,0.1,view)
 const display  = new three.WebGLRenderer({canvas:canvas})
 const control = new OrbitControls(camera,display.domElement)
@@ -124,8 +124,8 @@ const light = new three.AmbientLight()
 light.intensity = 2.50
 // light.intensity = 0 
 scene.add(light)
-const sun =  new three.PointLight(0xccffcc,1000,view)
-sun.intensity = 500000000
+const sun =  new three.PointLight(0xffd7a0,1000,view)
+sun.intensity = 600000000
 sun.position.y += 8000
 sun.position.z = 1000
 sun.position.x += 1000
@@ -135,7 +135,7 @@ scene.add(new three.PointLightHelper(sun,100))
 
 var speed = 30;
 const groundgeo =  new three.PlaneGeometry(40000,view)
-const groundmaterial = new three.MeshPhysicalMaterial({map:new three.TextureLoader().load(groundImg),side:three.DoubleSide})
+const groundmaterial = new three.MeshPhysicalMaterial({map:new three.TextureLoader().load(groundImg),color:0x333333,side:three.DoubleSide})
 const ground = new three.Mesh(groundgeo,groundmaterial)
 ground.rotation.x =-0.5 * Math.PI
 ground.position.y = -ctop
@@ -244,41 +244,52 @@ class BUILDINGS{
 
 
 
-function start()
-   {     //const canvas = document.createElement('canvas');
-        const circle = document.getElementById('logo')
-        //document.body.appendChild(canvas)
-        //javascript
-        const context = new AudioContext();
-        //javascript
-        const analyser = context.createAnalyser();
-        //javascript
-        const source = context.createMediaElementSource(audio)
-        source.connect(analyser)
-        analyser.connect(context.destination)
-        //javascript
-        const frequencyData = new Uint8Array(analyser.frequencyBinCount);
-        //javascript
-        function draw() {
-        requestAnimationFrame(draw);
-        
-        analyser.getByteFrequencyData(frequencyData);
-        var add  = 0
-        for (i in frequencyData){
-            add += frequencyData[i]
-        }
-        add = add/frequencyData.length
-        add = add
-        var scale = `${Number(add + 100 )}px`
-        add = 0
-        circle.style.width = scale
 
 
-        }
-        //javascript
-        draw();} 
+class ANA{
+  context = new AudioContext()
+  frequencyData = null
+  analyser = null
+  source = null
+  height = 0
+  high = 0
+  low = 0
+  error = false
 
+  constructor(audioEl){
+    try{
+      this.analyser = this.context.createAnalyser()
+      this.source = this.context.createMediaElementSource(audioEl)
+      this.source.connect(this.analyser)
+      this.analyser.connect(this.context.destination)
+      this.frequencyData = new Uint8Array(this.analyser.frequencyBinCount);
+      
+    }catch(e){
+      console.log("ERROR: ",e);
+      this.error = true
+    }
+  }
 
+  Scale(high,low){
+    if (!this.error){
+      this.high = Number(high)
+      this.low = Number(low)
+      this.height = this.high-this.low
+      this.analyser.getByteFrequencyData(this.frequencyData)
+      var add  = 0
+      for (i in this.frequencyData){
+          add += this.frequencyData[i]
+      }
+      var avg = add/this.frequencyData.length
+      var percentage = ((avg/100)*this.height)+this.low
+      return percentage
+    }else{
+      console.log("ERROR");
+      return low
+    }
+
+  }
+}
 
 
 function buildTree(xmin){
@@ -286,7 +297,7 @@ function buildTree(xmin){
   var width = treewidth
   var height= 100
   var height= (Math.random()*200)+50
-  new GLTFLoader().load([treegltf,treegltf2][1],e=>{
+  new GLTFLoader().load(treegltf ,e=>{
     tree = e.scene
     tree.scale.add(new three.Vector3(width,height,height))
     treelaw = new cannon.Body({shape: new cannon.Box(new cannon.Vec3(width,height))})
@@ -392,13 +403,13 @@ function restarti(bool = false){
   for (var i=0;i<=10;i++){
     createEnys()
   }
-  if (you){
-    you.position.z = yi
-    you.position.x = 0
-    you.position.y = 0
-    updateLaw(yourlaw,you)
+  if (yourlaw){
+    yourlaw.position.z = yi
+    yourlaw.position.x = 0
+    yourlaw.position.y = 0
+    updateObj(yourlaw,you)
   }
-  
+   
   Recoil()
    if (!bool){ reloadscore(0);topause(false)}
 }
@@ -411,9 +422,13 @@ updateLaw(groundlaw,ground)
 const bnum = 50;
 var leftbs = new BUILDINGS(bnum,-2300)
 var rightbs= new BUILDINGS(bnum,2300)
-
+var ana
 window.addEventListener("click",()=>{
-  try{start();}catch(e){}
+  try{
+    if (!ana){ana = new ANA(audio)}
+    
+
+  }catch(e){}
   if (innerWidth < 900){
     try{
       document.documentElement.requestFullScreen();
@@ -426,11 +441,23 @@ window.addEventListener("click",()=>{
 })
 // window.addEventListener("keydown",start )
 
+
+
+
 for (var i=0;i<30;i++){
   buildTree(-1500)
   buildTree(1500)
   
 }
+var left = new three.Mesh(new three.BoxGeometry(700,50,view,500),new three.MeshPhysicalMaterial({map:new three.TextureLoader().load(groundImg),color:0x999999}))
+left.position.y = 1-ctop
+left.position.x = 1550
+scene.add(left)
+restarti(true)
+var right = new three.Mesh(new three.BoxGeometry(700,50,view,500),new three.MeshPhysicalMaterial({map:new three.TextureLoader().load(groundImg),color:0x999999}))
+right.position.y = 1-ctop
+right.position.x = -1550
+scene.add(right)
 restarti(true)
 
 class YOURS{
@@ -445,6 +472,7 @@ class YOURS{
 
       cr.addEventListener("click",e=>{
         load(true)
+        carc.classList.add("none")
         this.choose(cr.id)
         
       })
@@ -476,7 +504,7 @@ class YOURS{
       you = e.scene
       var width = 60
       var height = 70
-      var d = 20
+      var d = 10
       you.scale.copy(new three.Vector3(width,height,width))
       yourlaw = new cannon.Body({
         shape:new cannon.Box(new cannon.Vec3(width-d,height-d,width-d))
@@ -503,7 +531,7 @@ class YOURS{
               
               setTimeout(() => {
                 exp.classList.add("none")
-                
+                exp.src = ""
                 
               }, 1500);
               
@@ -515,7 +543,7 @@ class YOURS{
       if(carc.classList.contains("none")){load(false)}
       this.loading = false
     },function ( xhr ) {
-    
+      pbar.style.width = `${Math.ceil(xhr.loaded / xhr.total * 100)}%`
       console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded of car' );
     
     })
@@ -545,7 +573,7 @@ var  oit = yy=> setTimeout(() => {
 }, yy);
 function controlCar(e){
   if(running){var leftspeed = 30
-  var maxang = 0.4 
+  var maxang = 0.1
   var anginc = (30/700)*maxang
   
   console.log(e)
@@ -574,6 +602,7 @@ function controlCar(e){
     if (e == "ArrowUp"){
       if (yourlaw.position.z < 1-(700-yi)){}else{
         yourlaw.position.z -= 10
+        sp = false
       }
     }
     else if (e == "ArrowDown"){
@@ -621,10 +650,16 @@ document.querySelectorAll(".arrow").forEach(ar=>{
   })
 
 })
-
+function onresizeWin(){
+  camera.aspect = innerWidth/innerHeight
+  camera.updateProjectionMatrix()
+  display.setSize(innerWidth,innerHeight)
+  control.domElement =  display.domElement
+  control.object = camera
+}
 function animate(){
   requestAnimationFrame(animate)
-
+  
   if (!paused){if(you){
     if(yourlaw.position.z < 0){speed = -((yourlaw.position.z)/20)}else{
       speed = 20
@@ -663,6 +698,11 @@ function animate(){
 
   if (enyslaw[0]){for (var o in enyslaw){
     enyslaw[o].position.z += speed
+    if(ana){
+      var num = Math.ceil(ana.Scale(200,100))
+      console.log(num);
+      logo.style.width = num+"px"
+    }
     if (enyslaw[o].position.z > 0){
       enyslaw[o].position.z = 1-((((enys.length)*(enywidth+1000))+enywidth))
       
@@ -676,21 +716,16 @@ function animate(){
   updateObj(groundlaw,ground)
   if (you)
     updateObj(yourlaw,you)
-  
-  
-  camera.aspect = innerWidth/innerHeight
-  camera.updateProjectionMatrix()
-  law.step(1/60)
-  display.setSize(innerWidth,innerHeight)
+
   control.update()
-  display.render(scene,camera)
-  
-  
+  law.step(1/60)
+  display.render(scene,camera)  
 }
+
+window.onresize = onresizeWin
+onresizeWin()
+
 var sp = false
-
-
-
 
 window.addEventListener("keydown",e=>{
   controlCar(e.key)
