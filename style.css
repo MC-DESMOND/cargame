@@ -151,7 +151,7 @@ wrapper{
   animation: rotate 3s linear infinite;
 }
 .hs{
-  color: rgb(255, 255, 255);
+  color: #007946 ;
   top: 40px;
   animation: beat 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) infinite;
 }
@@ -240,10 +240,10 @@ wrapper{
 }
 .rh:hover{
   border-color: transparent;
-  background-color: rgba(106, 234, 243, 0.171);
+  background-color: #01313399;
 }
 .rh{
-  border-color: rgb(106, 234, 243);
+  border-color: #013133;
   color: rgb(91, 239, 250);
   transition: 
    background-color 0.3s ease-in-out,
