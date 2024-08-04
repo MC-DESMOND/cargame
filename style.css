@@ -62,17 +62,26 @@ wrapper{
   height: 100%;
   align-self: center;
   background-color: rgba(0, 0, 0, 0.734);
-  /* background-image: url("./bt/fire.gif"); */
-  background-size: 10000px;
+  background-size: contain;
   background-position: center;
   display: block;
   overflow: hidden;
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px) ;
   transition: 
     opacity 0.3s ease-in-out,
     visibility 0.4s ease-in-out,
     height 0.3s ease-in-out
   ;
+}
+.panel::before{
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background-image: url("./bt/DESDROID2.png");
+  background-size: contain;
+  background-position: center;
+  opacity: 0.09 ;
+  content: "";
 }
 .i{
   color:blue;
@@ -243,7 +252,7 @@ wrapper{
   background-color: #01313399;
 }
 .rh{
-  border-color: #013133;
+  border-color: #00f7ff;
   color: rgb(91, 239, 250);
   transition: 
    background-color 0.3s ease-in-out,

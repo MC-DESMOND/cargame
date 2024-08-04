@@ -497,6 +497,7 @@ class YOURS{
   
   LoadYou(url){
     new GLTFLoader().load(url,e=>{
+      onresizeWin()
       if (you && yourlaw){
         scene.remove(you)
         law.removeBody(yourlaw)
@@ -528,7 +529,8 @@ class YOURS{
               topause(true,true)
               exp.src = "./bt/explode2.gif"
               exp.classList.remove("none")
-              
+              yourlaw.position.x = 0
+              Recoil()
               setTimeout(() => {
                 exp.classList.add("none")
                 exp.src = ""
@@ -582,7 +584,7 @@ function controlCar(e){
   { 
     
     if (!paused){if (e == "ArrowRight"){
-      if (yourlaw.position.x > 700){}else{
+      if (yourlaw.position.x > lll){}else{
         if (yourlaw.quaternion.y > maxang ){}else{
           yourlaw.quaternion.y += anginc
           
@@ -590,7 +592,7 @@ function controlCar(e){
         yourlaw.position.x += leftspeed
       }
     }else if(e == "ArrowLeft"){
-      if (yourlaw.position.x < -700){}else{
+      if (yourlaw.position.x < 1-lll){}else{
         if (yourlaw.quaternion.y < Number(`-${maxang}`)){}else{
           yourlaw.quaternion.y -= anginc
         }
@@ -600,7 +602,7 @@ function controlCar(e){
       yourlaw.quaternion.y = 0
     }
     if (e == "ArrowUp"){
-      if (yourlaw.position.z < 1-(700-yi)){}else{
+      if (yourlaw.position.z < 1-(lll-yi)){}else{
         yourlaw.position.z -= 10
         sp = false
       }
@@ -679,7 +681,17 @@ function animate(){
       yourlaw.position.z += 10
     }
   }
-
+  if (yourlaw){
+    if (yourlaw.position.x > lll){
+      yourlaw.position.x = lll
+    }
+    if (yourlaw.position.x < 1-lll){
+      yourlaw.position.x = 1-lll
+    }
+    if (yourlaw.position.z > yi){
+      yourlaw.position.z = yi
+    }
+  }
   groundlaw.position.z += speed
   if (groundlaw.position.z > l+1000){
     groundlaw.position.z = l
@@ -715,7 +727,7 @@ function animate(){
 
   updateObj(groundlaw,ground)
   if (you)
-    updateObj(yourlaw,you)
+    {updateObj(yourlaw,you)}
 
   control.update()
   law.step(1/60)
