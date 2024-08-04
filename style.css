@@ -4,7 +4,7 @@
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  background-color: black;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -21,6 +21,21 @@
   }
   
 }
+@keyframes slar {
+  0%{
+    transform: rotateZ(0);
+  }
+  33%{
+    transform: rotateZ(30deg);
+  }
+  66%{
+    transform: rotateZ(-30deg);
+  }
+  100%{
+    transform: rotateZ(0deg);
+  }
+  
+}
 *{
   user-select: none;
 }
@@ -30,10 +45,12 @@
   margin: 0;
   padding: 0;
   z-index: -1;
+  /* transition: rotate 0.3s ease-in-out; */
 }
 body{
   padding: 0;
   margin: 0;
+  
 }
 .exw{
   position: fixed;

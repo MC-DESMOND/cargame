@@ -18,6 +18,7 @@ import bt8 from './bt/bt8.png'
 import bt9 from './bt/bt9.png'
 import bt0 from './bt/bt0.png'
 var running = false
+var row = false
 const panel = document.getElementById('panel')
 const audio = document.createElement("audio")
 const logo = document.getElementById("logo")
@@ -34,7 +35,7 @@ const pauseshow = document.getElementById("s")
 var re = false;
 const restart = document.getElementById("restart")
 document.body.appendChild(audio)
-audio.src = '/bt/EJ.mp3'
+audio.src = '/bt/RS.mp3'
 audio.volume -= 0.4
 audio.loop = true
 
@@ -570,14 +571,12 @@ tinp.reverse()
 var l =  -2000
 var ap = false
 groundlaw.position.z = l
-var  oit = yy=> setTimeout(() => {
-  yourlaw.quaternion.y = 0
-}, yy);
+
 function controlCar(e){
   if(running){var leftspeed = 30
   var maxang = 0.1
   var anginc = (30/700)*maxang
-  
+  var t = document.getElementById("T")
   console.log(e)
   
   if (you)
@@ -618,6 +617,9 @@ function controlCar(e){
     if (e.toLowerCase() == "x"){
       Recoil()
     }
+    if (e.toLowerCase() == "t"){
+      row = !row
+    }
     if (e.toLowerCase() == "m"){
       if (ap){
         audio.play()
@@ -628,7 +630,15 @@ function controlCar(e){
       }
       ap = !ap
     }
-    
+  if (row){
+    var angle = 0.00001-(yourlaw.quaternion.y*50)
+    console.log(angle);
+    canvas.style.rotate = `${angle}deg` 
+    t.style.backgroundColor = "rgb(0, 77, 98)"
+  }else{
+    canvas.style.rotate = `0deg`
+    t.style.backgroundColor = "rgba(0, 21, 27, 0.658)"
+   }
   }}
 }
 document.querySelectorAll(".arrowk").forEach(ar=>{
@@ -712,7 +722,6 @@ function animate(){
     enyslaw[o].position.z += speed
     if(ana){
       var num = Math.ceil(ana.Scale(200,100))
-      console.log(num);
       logo.style.width = num+"px"
     }
     if (enyslaw[o].position.z > 0){
