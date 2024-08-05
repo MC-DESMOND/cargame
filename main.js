@@ -1,12 +1,15 @@
 import './style.css'
-import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls'
+
 import * as three from 'three'
 import * as cannon from 'cannon-es'
+
+import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls'
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+ 
 import groundImg from './bt/road.png'
 import rockImg from './bt/rock.png'
 import CITYView from './bt/bg.png'
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
- 
+
 import bt1 from './bt/bt1.png'
 import bt2 from './bt/bt2.png'
 import bt3 from './bt/bt3.png'
@@ -17,8 +20,11 @@ import bt7 from './bt/bt7.png'
 import bt8 from './bt/bt8.png'
 import bt9 from './bt/bt9.png'
 import bt0 from './bt/bt0.png'
+
 var running = false
 var row = false
+var paused = false
+
 const panel = document.getElementById('panel')
 const audio = document.createElement("audio")
 const logo = document.getElementById("logo")
@@ -32,15 +38,18 @@ const intro = document.getElementById("intro")
 const exp = document.getElementById("exp")
 const pbar = document.getElementById("pbspan")
 const pauseshow = document.getElementById("s")
-var re = false;
 const restart = document.getElementById("restart")
+
 document.body.appendChild(audio)
-audio.src = '/bt/RS.mp3'
+audio.src = '/bt/EJ.mp3'
 audio.volume -= 0.4
+audio.volume = 0
 audio.loop = true
 
 const treegltf = "bt/tree2.glb"
+
 var buildingsTex = []
+
 buildingsTex.push(
   new three.TextureLoader().load(bt1),
   new three.TextureLoader().load(bt1),
@@ -57,25 +66,29 @@ buildingsTex.push(
   new three.TextureLoader().load(bt0),
   new three.TextureLoader().load(bt0),
   )
+
 var yi = -300
 var iscore = 0
 var tinp = []
 var treewidth = 100
 var enywidth = 100
-const scene = new three.Scene();
 const view = 50000
 var lll = 700
+
+const scene = new three.Scene();
 const canvas = document.getElementById("app")
 const camera = new three.PerspectiveCamera(75, window.innerWidth/window.innerHeight,0.1,view)
 const display  = new three.WebGLRenderer({canvas:canvas})
 const control = new OrbitControls(camera,display.domElement)
+const law = new cannon.World({gravity:new cannon.Vec3(0,-10000,0)})
 const rh = document.getElementById("rh")
-var paused = false
 const audio2 = document.createElement("audio")
 document.body.appendChild(audio2)
 audio2.src = '/bt/carcrash.wav'
 audio2.volume -= 0.1
+const clock = new three.Clock();
 control.update()
+
 
 function updateLaw(LAW,OBJECT){
   // requestAnimationFrame(e=>updateLaw(LAW,OBJECT))
@@ -85,6 +98,7 @@ function updateLaw(LAW,OBJECT){
   OBJECT.position.copy(LAW.position)
   OBJECT.quaternion.copy(LAW.quaternion)
 }
+
 function updateObj(LAW,OBJECT){
   // requestAnimationFrame(e=>updateObj(LAW,OBJECT))
   OBJECT.position.copy(LAW.position)
@@ -95,11 +109,13 @@ function updateObj(LAW,OBJECT){
 
   
 }
+
+
 // camera.position.setX(-1000)
 function setHighScore(num = 0){
   localStorage.setItem("High Score",num)
-
 }
+
 function getHighScore(){
   var hs
   hs = localStorage.getItem("High Score")
@@ -110,17 +126,18 @@ function getHighScore(){
   return hs
 }
 
+var speed = 30;
 var hits = 0
 var maxhits = 0
 var ctop = 200
-
-const law = new cannon.World({gravity:new cannon.Vec3(0,-10000,0)})
 var trees = []
 var treeslaw = []
 var enys = []
 var enyslaw = []
 var enyslawsid = []
-var you,yourlaw
+var you,yourlaw,mixer
+
+
 const light = new three.AmbientLight()
 light.intensity = 2.50
 // light.intensity = 0 
@@ -134,7 +151,6 @@ sun.position.x += 1000
 scene.add(sun)
 scene.add(new three.PointLightHelper(sun,100))
 
-var speed = 30;
 const groundgeo =  new three.PlaneGeometry(40000,view)
 const groundmaterial = new three.MeshPhysicalMaterial({map:new three.TextureLoader().load(groundImg),color:0x333333,side:three.DoubleSide})
 const ground = new three.Mesh(groundgeo,groundmaterial)
@@ -150,6 +166,7 @@ const groundlaw = new cannon.Body({
 })
 law.addBody(groundlaw)
 
+
 function load(bool)
 {
   if (bool){
@@ -162,6 +179,7 @@ function load(bool)
 }
 load(true)
 
+
 function Recoil(){
   if (you){you.rotation.y  = 0 
   you.rotation.x  = 0 
@@ -169,6 +187,7 @@ function Recoil(){
   you.position.z = yi
   updateLaw(yourlaw,you)
 }}
+
 
 class BUILDINGS{
   buildings = []
@@ -204,7 +223,9 @@ class BUILDINGS{
     this.buildingslaw.push(buildinglaw)
     this.buildings.push(building)
     this.binp.push(buildinglaw.position.z)
+
   }
+
   UpdateBuildingZplus(z){
     for (var o in this.buildingslaw){
       this.buildingslaw[o].position.z += z
@@ -214,6 +235,7 @@ class BUILDINGS{
     updateObj(this.buildingslaw[o],this.buildings[o])
     }
   }
+
 }
 
 // setTimeout(e=>{
@@ -278,7 +300,7 @@ class ANA{
       this.height = this.high-this.low
       this.analyser.getByteFrequencyData(this.frequencyData)
       var add  = 0
-      for (i in this.frequencyData){
+      for (var i in this.frequencyData){
           add += this.frequencyData[i]
       }
       var avg = add/this.frequencyData.length
@@ -298,6 +320,7 @@ function buildTree(xmin){
   var width = treewidth
   var height= 100
   var height= (Math.random()*200)+50
+
   new GLTFLoader().load(treegltf ,e=>{
     tree = e.scene
     tree.scale.add(new three.Vector3(width,height,height))
@@ -314,17 +337,22 @@ function buildTree(xmin){
     tinp.push(treelaw.position.z)
     
   });
+
 }
+
+
 function topause(bool,crashed = false){
   var p = document.querySelectorAll(".p")
   var addnp = function() {p.forEach(i=>i.classList.add("none"))}
   var renp = function() {p.forEach(i=>i.classList.remove("none"))}
+
   if (bool){
     panel.style.visibility = 'initial'
     panel.style.opacity = "1"
     pauseshow.innerText = "START"
     panel.style.height = "100%"
     renp()
+
   }else{
     if (pauseshow.innerText.trim() == "crashed"){
       if(you){
@@ -374,8 +402,9 @@ function createEnys(){
   enys.push(eny)
   enyslaw.push(enylaw)
   enyslawsid.push(enylaw.id)
+
 }
-paused = true
+topause(true)
 
 
 function reloadscore(num){
@@ -390,7 +419,9 @@ function reloadscore(num){
   // setHighScore(0)
   highscore.innerText = "High score: "+getHighScore()
 }
+
 reloadscore(0)
+
 function restarti(bool = false){
   if (enyslaw.length > 2){for (var i in enyslaw){
     scene.remove(enys[i])
@@ -450,11 +481,12 @@ for (var i=0;i<30;i++){
   buildTree(1500)
   
 }
+
 var left = new three.Mesh(new three.BoxGeometry(700,50,view,500),new three.MeshPhysicalMaterial({map:new three.TextureLoader().load(groundImg),color:0x999999}))
 left.position.y = 1-ctop
 left.position.x = 1550
 scene.add(left)
-restarti(true)
+
 var right = new three.Mesh(new three.BoxGeometry(700,50,view,500),new three.MeshPhysicalMaterial({map:new three.TextureLoader().load(groundImg),color:0x999999}))
 right.position.y = 1-ctop
 right.position.x = -1550
@@ -467,6 +499,7 @@ class YOURS{
   idid = {}
   current = 0
   loading = false
+  
   constructor(selector){
     this.choosers = document.querySelectorAll(`.${selector}`)
     this.choosers.forEach((cr,index) =>{
@@ -480,6 +513,7 @@ class YOURS{
     })
     console.log(this.choosers)
   }
+
   choose(name){
     this.loading = true
     var el = Array(...this.choosers).find(cr=>cr.id == name)
@@ -488,15 +522,16 @@ class YOURS{
     
     this.choosers.forEach((cr,index) =>{
       if (cr.id == el.id){
-        cr.style.filter = "brightness(1)"
+        cr.style.border = "5px solid cyan"
       }else{
-        cr.style.filter = "brightness(0.4)"
+        cr.style.border = ""
       }
     })
 
   }
   
   LoadYou(url){
+    mixer = null
     new GLTFLoader().load(url,e=>{
       onresizeWin()
       if (you && yourlaw){
@@ -545,7 +580,21 @@ class YOURS{
       })
       if(carc.classList.contains("none")){load(false)}
       this.loading = false
+      mixer = new three.AnimationMixer(you);
+      const clips = e.animations;
+
+      // Play a certain animation
+      // const clip = THREE.AnimationClip.findByName(clips, 'HeadAction');
+      // const action = mixer.clipAction(clip);
+      // action.play();
+
+      // Play all animations at the same time
+      clips.forEach(function(clip) {
+          const action = mixer.clipAction(clip);
+          action.play();
+        });
     },function ( xhr ) {
+
       pbar.style.width = `${Math.ceil(xhr.loaded / xhr.total * 100)}%`
       console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded of car' );
     
@@ -571,6 +620,7 @@ tinp.reverse()
 var l =  -2000
 var ap = false
 groundlaw.position.z = l
+
 
 function controlCar(e){
   if(running){var leftspeed = 30
@@ -641,6 +691,7 @@ function controlCar(e){
    }
   }}
 }
+
 document.querySelectorAll(".arrowk").forEach(ar=>{
   var int
   ar.addEventListener("touchstart",e=>{
@@ -662,6 +713,7 @@ document.querySelectorAll(".arrow").forEach(ar=>{
   })
 
 })
+
 function onresizeWin(){
   camera.aspect = innerWidth/innerHeight
   camera.updateProjectionMatrix()
@@ -669,9 +721,11 @@ function onresizeWin(){
   control.domElement =  display.domElement
   control.object = camera
 }
+
 function animate(){
   requestAnimationFrame(animate)
-  
+  if(mixer)
+    mixer.update(clock.getDelta());
   if (!paused){if(you){
     if(yourlaw.position.z < 0){speed = -((yourlaw.position.z)/20)}else{
       speed = 20

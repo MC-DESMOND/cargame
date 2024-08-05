@@ -317,17 +317,15 @@ wrapper{
   border-radius: 20px;
 }
 .car{
-  
   transition: scale 0.3s ease-in-out;
-  border-radius: 10px;
   width: fit-content;
 
 }
 .car img{
   height: 250px;
   box-sizing: border-box;
+  transition: border 0.3s ease-in-out;
   /* object-fit: contain; */
-  border-radius: inherit;
 }
 .car:hover{
   scale: 1.02;
@@ -432,7 +430,7 @@ wrapper{
 }
 *::-webkit-scrollbar-thumb{
   background-color: rgba(0, 255, 255, 0.219);
-  border-radius: 5px;
+  /* border-radius: 5px; */
 }
 
 .none{
