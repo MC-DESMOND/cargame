@@ -44,7 +44,6 @@ document.body.appendChild(audio)
 audio.src = '/bt/VI.mp3'
 audio.volume -= 0.4
 var lim = -1000
-audio.volume = 0
 audio.loop = true
 
 const treegltf = "bt/tree2.glb"
@@ -581,7 +580,7 @@ class YOURS{
       var d = 10
       you.scale.copy(new three.Vector3(width,height,width))
       yourlaw = new cannon.Body({
-        shape:new cannon.Box(new cannon.Vec3(width-d,height-d,width-d))
+        shape:new cannon.Box(new cannon.Vec3(width-d,height,width-d))
         ,mass:10
       })
       yourlaw.position.y += (height/2)-ctop
