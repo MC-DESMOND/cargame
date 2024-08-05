@@ -41,9 +41,9 @@ const pauseshow = document.getElementById("s")
 const restart = document.getElementById("restart")
 
 document.body.appendChild(audio)
-audio.src = '/bt/EJ.mp3'
+audio.src = '/bt/VI.mp3'
 audio.volume -= 0.4
-audio.volume = 0
+// audio.volume = 0
 audio.loop = true
 
 const treegltf = "bt/tree2.glb"
