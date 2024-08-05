@@ -75,7 +75,8 @@ var enywidth = 100
 const view = 50000
 var lll = 700
 
-const scene = new three.Scene();
+const scene = new three.Object3D();
+const world = new three.Scene();
 const canvas = document.getElementById("app")
 const camera = new three.PerspectiveCamera(75, window.innerWidth/window.innerHeight,0.1,view)
 const display  = new three.WebGLRenderer({canvas:canvas})
@@ -89,6 +90,7 @@ audio2.volume -= 0.1
 const clock = new three.Clock();
 control.update()
 
+world.add(scene)
 
 function updateLaw(LAW,OBJECT){
   // requestAnimationFrame(e=>updateLaw(LAW,OBJECT))
@@ -126,6 +128,8 @@ function getHighScore(){
   return hs
 }
 
+
+
 var speed = 30;
 var hits = 0
 var maxhits = 0
@@ -157,7 +161,7 @@ const ground = new three.Mesh(groundgeo,groundmaterial)
 ground.rotation.x =-0.5 * Math.PI
 ground.position.y = -ctop
 scene.add(ground)
-scene.background = new three.TextureLoader().load(CITYView)
+world.background = new three.TextureLoader().load(CITYView)
 
 const groundlaw = new cannon.Body({
   type:cannon.Body.STATIC
@@ -354,7 +358,7 @@ function topause(bool,crashed = false){
     renp()
 
   }else{
-    if (pauseshow.innerText.trim() == "crashed"){
+    if (pauseshow.innerText.trim().toLowerCase() == "crashed"){
       if(you){
         you.position.z = yi
         updateLaw(yourlaw,you)
@@ -374,7 +378,7 @@ function topause(bool,crashed = false){
     }
   }
   if (crashed){
-    pauseshow.innerText = "crashed"
+    pauseshow.innerText = "CRASHED"
     restarti(true)
   }
   paused = bool
@@ -493,6 +497,7 @@ right.position.x = -1550
 scene.add(right)
 restarti(true)
 
+
 class YOURS{
 
   choosers = []
@@ -514,9 +519,40 @@ class YOURS{
     console.log(this.choosers)
   }
 
+  setCurrentCar(num = null){
+    if (!num){
+      var hr = localStorage.getItem("Current Car")
+      if (hr){
+        num = hr
+      }else
+        {num = this.choosers[0].id}
+    }
+    console.log(num)
+    localStorage.setItem("Current Car",num)
+  }
+  
+  getCurrentCar(){
+    var hs
+    hs = localStorage.getItem("Current Car")
+    if (!hs){
+      this.setCurrentCar()
+      hs = this.getCurrentCar()
+    }
+    return hs
+  }
+
+  loadCar(){
+    var hr = this.getCurrentCar()
+    this.choose(hr)
+  }
+
   choose(name){
     this.loading = true
     var el = Array(...this.choosers).find(cr=>cr.id == name)
+    if (!el){
+      el = Array(...this.choosers).find(cr=>cr.id == this.getCurrentCar())
+    }
+    this.setCurrentCar(el.id)
     console.log(el);
     this.LoadYou(el.id)
     
@@ -603,8 +639,10 @@ class YOURS{
 }
 
 var youl = new YOURS('car-img')
-var a = Array(...youl.choosers).find(e=>e.id.includes("alpha"))
-youl.choose(a.id)
+youl.loadCar()
+
+
+
 cb.addEventListener("click",e=>{
   if (youl.loading){}else{load(false)}
   carc.classList.add("none")
@@ -634,18 +672,19 @@ function controlCar(e){
     
     if (!paused){if (e == "ArrowRight"){
       if (yourlaw.position.x > lll){}else{
-        if (yourlaw.quaternion.y > maxang ){}else{
-          yourlaw.quaternion.y += anginc
+        // if (yourlaw.quaternion.y > maxang ){}else{
+        //   yourlaw.quaternion.y += anginc
           
-        }
+        // }
         yourlaw.position.x += leftspeed
       }
     }else if(e == "ArrowLeft"){
       if (yourlaw.position.x < 1-lll){}else{
-        if (yourlaw.quaternion.y < Number(`-${maxang}`)){}else{
-          yourlaw.quaternion.y -= anginc
-        }
+        // if (yourlaw.quaternion.y < Number(`-${maxang}`)){}else{
+        //   yourlaw.quaternion.y -= anginc
+        // }
         yourlaw.position.x -= leftspeed
+        
       }
     }else{
       yourlaw.quaternion.y = 0
@@ -689,6 +728,7 @@ function controlCar(e){
     canvas.style.rotate = `0deg`
     t.style.backgroundColor = "rgba(0, 21, 27, 0.658)"
    }
+   scene.position.x = 1-yourlaw.position.x
   }}
 }
 
@@ -794,7 +834,7 @@ function animate(){
 
   control.update()
   law.step(1/60)
-  display.render(scene,camera)  
+  display.render(world,camera)  
 }
 
 window.onresize = onresizeWin

@@ -184,8 +184,9 @@ wrapper{
 .title{
   text-align: center;
   font-size: 70px;
+  font-weight: bolder;
   color: rgb(0, 238, 255);
-  font-family: "Racing Sans One", sans-serif;
+  font-family: "Racing Sans One", inherit;
   font-style: italic;
   width: 100%;
   text-shadow: 4px 4px 0px black;
@@ -468,7 +469,7 @@ wrapper{
 .tleft{
   position: relative;
 }
-.tleft::after{
+.tleft::before{
   content: "";
   position: absolute;
   width: 15px;
