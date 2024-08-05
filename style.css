@@ -451,6 +451,20 @@ wrapper{
   background-color: rgba(0, 255, 255, 0.219);
   /* border-radius: 5px; */
 }
+.tright{
+  position: relative;
+}
+.tright::after{
+  content: "";
+  position: absolute;
+  width: 15px;
+  height: 15px;
+  background-color: cyan;
+  top: 0;
+  margin-top: 2px;
+  right: 2px;
+  clip-path: polygon(100% 0%, 0% 0%, 100% 100%);
+}
 .tleft{
   position: relative;
 }
@@ -462,8 +476,8 @@ wrapper{
   background-color: cyan;
   top: 0;
   margin-top: 2px;
-  right: 2px;
-  clip-path: polygon(100% 0%, 0% 0%, 100% 100%);
+  left: 2px;
+  clip-path: polygon(0% 0%, 100% 0%, 0% 100%);
 }
 
 .none{
