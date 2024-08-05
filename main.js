@@ -24,7 +24,7 @@ import bt0 from './bt/bt0.png'
 var running = false
 var row = false
 var paused = false
-
+var fly = false
 const panel = document.getElementById('panel')
 const audio = document.createElement("audio")
 const logo = document.getElementById("logo")
@@ -43,7 +43,8 @@ const restart = document.getElementById("restart")
 document.body.appendChild(audio)
 audio.src = '/bt/VI.mp3'
 audio.volume -= 0.4
-// audio.volume = 0
+var lim = -1000
+audio.volume = 0
 audio.loop = true
 
 const treegltf = "bt/tree2.glb"
@@ -662,9 +663,9 @@ groundlaw.position.z = l
 
 function controlCar(e){
   if(running){var leftspeed = 30
-  var maxang = 0.1
-  var anginc = (30/700)*maxang
+  var anginc = 0.01
   var t = document.getElementById("T")
+  var flyyou = document.querySelectorAll(".fly")
   console.log(e)
   
   if (you)
@@ -672,25 +673,21 @@ function controlCar(e){
     
     if (!paused){if (e == "ArrowRight"){
       if (yourlaw.position.x > lll){}else{
-        // if (yourlaw.quaternion.y > maxang ){}else{
-        //   yourlaw.quaternion.y += anginc
+          yourlaw.quaternion.y += anginc
           
-        // }
         yourlaw.position.x += leftspeed
       }
     }else if(e == "ArrowLeft"){
       if (yourlaw.position.x < 1-lll){}else{
-        // if (yourlaw.quaternion.y < Number(`-${maxang}`)){}else{
-        //   yourlaw.quaternion.y -= anginc
-        // }
+          yourlaw.quaternion.y -= anginc
         yourlaw.position.x -= leftspeed
         
       }
     }else{
-      yourlaw.quaternion.y = 0
+      // yourlaw.quaternion.y = 0
     }
     if (e == "ArrowUp"){
-      if (yourlaw.position.z < 1-(lll-yi)){}else{
+      if (yourlaw.position.z < lim){}else{
         yourlaw.position.z -= 10
         sp = false
       }
@@ -706,8 +703,27 @@ function controlCar(e){
     if (e.toLowerCase() == "x"){
       Recoil()
     }
-    if (e.toLowerCase() == "t"){
-      row = !row
+    var el
+    flyyou.forEach(e =>{ 
+      if (e.id == youl.getCurrentCar()){
+        el = e
+      }
+      console.log("e.id",(e.id == youl.getCurrentCar()))
+    }
+    )
+    
+    console.log("currentcar:",youl.getCurrentCar());
+    
+    console.log("true:",el);
+
+    
+    if (el){if (e.toLowerCase() == "t"){
+      fly = !fly
+      console.log("fly: ",fly);
+      
+      
+    }}else{
+      fly = false
     }
     if (e.toLowerCase() == "m"){
       if (ap){
@@ -719,13 +735,9 @@ function controlCar(e){
       }
       ap = !ap
     }
-  if (row){
-    var angle = 0.00001-(yourlaw.quaternion.y*50)
-    console.log(angle);
-    canvas.style.rotate = `${angle}deg` 
+  if (fly){
     t.style.backgroundColor = "rgb(0, 77, 98)"
   }else{
-    canvas.style.rotate = `0deg`
     t.style.backgroundColor = "rgba(0, 21, 27, 0.658)"
    }
    scene.position.x = 1-yourlaw.position.x
@@ -772,14 +784,31 @@ function animate(){
     }}}else{
   speed = 0
   }
+  if (you){if (fly){
+      if (yourlaw.position.y < 300){
+        yourlaw.position.y += 1
+        }
+      if (yourlaw.position.z > -600){
+        yourlaw.position.z -= 1
+        }
+        yourlaw.mass = 0
+        lim = -3000
+  }else{
+    if (yourlaw.position.y > 0){
+      yourlaw.position.y -= 1
+      }else if (yourlaw.position.y == 0){
+        yourlaw.mass = 10
+      }
+      yourlaw.mass = 10
+      lim = -1000
+  }}
   // camera.position.z -= 3
   if (audio.paused && !ap){
     try{audio.play()}catch(DOMException){}
   }
 
   if (sp){
-    if (yourlaw.position.z >= yi){
-      yourlaw.position.z = yi
+    if (yourlaw.position.z >= yi || (fly && yourlaw.position.z > -600) ){
       sp = false
     }else{
       yourlaw.position.z += 10
@@ -794,6 +823,11 @@ function animate(){
     }
     if (yourlaw.position.z > yi){
       yourlaw.position.z = yi
+    }
+    if (yourlaw.quaternion.y > 0){
+      yourlaw.quaternion.y -= 0.001
+    }else if (yourlaw.quaternion.y < 0){
+      yourlaw.quaternion.y += 0.001
     }
   }
   groundlaw.position.z += speed

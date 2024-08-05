@@ -261,7 +261,6 @@ wrapper{
 .logo{
   width: 100px;
   /* top: 20%; */
-  border-radius: 50%;
   opacity: 0.5;
   animation: rotate 10s linear infinite;
 }
