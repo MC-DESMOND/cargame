@@ -9,9 +9,12 @@
 #        |  _ \ / _ \|  _ \ / ___| ____|
 #        | | | | | | | | | | |  _|  _|
 #        | |_| | |_| | |_| | |_| | |___
-#        |____/ \___/|____/ \____|_____|   ■■■■■■■■■■■ DESDROID INC ®️ ■■■■■■■■■■■
-#        
+#        |____/ \___/|____/ \____|_____|
+
+$ ■■■■■■■■■■■ DESDROID INC ®️ ■■■■■■■■■■■
+     
 */
+
 
 
 import './style.css'
@@ -384,6 +387,7 @@ function topause(bool,crashed = false){
       }
       reloadscore(0)
       Recoil()
+      pspeed = 10
     }
 
     panel.style.height = "0"
@@ -457,7 +461,7 @@ function restarti(bool = false){
   enys = []
   enyslaw = []
   enyslawsid = []
-  for (var i=0;i<=10;i++){
+  for (var i=0;i<=15;i++){
     createEnys()
   }
 
