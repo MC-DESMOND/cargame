@@ -582,6 +582,11 @@ class YOURS{
     }
     this.setCurrentCar(el.id)
     console.log(el);
+    if (el.classList.contains("fly")){
+      
+    }else{
+      fly = false
+    }
     this.LoadYou(el.id)
     
     this.choosers.forEach((cr,index) =>{
@@ -765,10 +770,12 @@ function controlCar(e){
     
     if (el){if (e.toLowerCase() == "t"){
       fly = !fly
+      t.classList.remove("none")
       console.log("fly: ",fly);
 
       }
     }else{
+      t.classList.add("none")
       fly = false
     }
 
