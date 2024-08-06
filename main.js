@@ -219,6 +219,7 @@ class BUILDINGS{
   buildings = []
   buildingslaw = []
   binp = []
+  width = 600
 
   constructor(length , z){
     for (var i=0;i<length;i++){
@@ -230,17 +231,16 @@ class BUILDINGS{
   }
 
   BuildBuilding(xmin){
-    const width = 600
     const height = (Math.random()*3000)+1000
-    const buildingGeo = new three.BoxGeometry(width,height,width,height)
+    const buildingGeo = new three.BoxGeometry(this.width,height,this.width,height)
     var texIndex = Math.ceil(Math.random()*buildingsTex.length-1)
     const buildingTex = buildingsTex[texIndex]
     const buildingMat = new three.MeshPhysicalMaterial({map:buildingTex,roughness:0})
     const building = new three.Mesh(buildingGeo,buildingMat)
-    const buildinglaw = new cannon.Body({shape: new cannon.Box(new cannon.Vec3(height,width,0))})
+    const buildinglaw = new cannon.Body({shape: new cannon.Box(new cannon.Vec3(height,this.width,0))})
 
     building.position.x -= xmin
-    building.position.z = 1-(((this.buildings.length)*(width+100))+width)
+    building.position.z = 1-(((this.buildings.length)*(this.width+100))+this.width)
     building.position.y = (height/2)-ctop
 
     updateLaw(buildinglaw,building)
@@ -486,6 +486,14 @@ const bnum = 50;
 var leftbs = new BUILDINGS(bnum,-2300)
 var rightbs= new BUILDINGS(bnum,2300)
 
+var  bss = []
+
+// for (var i=0;i<10;i++){
+//   var lbs = new BUILDINGS(bnum,1-(2300+(leftbs.width*i)))
+//   var rbs= new BUILDINGS(bnum,2300+(leftbs.width*i))
+//   bss.push(lbs,rbs)
+// }
+
 var ana
 window.addEventListener("click",()=>{
   try{
@@ -513,15 +521,16 @@ for (var i=0;i<30;i++){
   buildTree(1500)
   
 }
-
-var left = new three.Mesh(new three.BoxGeometry(700,50,view,500),new three.MeshPhysicalMaterial({map:new three.TextureLoader().load(groundImg),color:0x999999}))
+var pwidth = 2000
+var left = new three.Mesh(new three.BoxGeometry(pwidth,100,view,500),new three.MeshPhysicalMaterial({color:0x555555}))
 left.position.y = 1-ctop
-left.position.x = 1550
+left.position.x = (pwidth)+300
+// left.position.x = 1550
 scene.add(left)
 
-var right = new three.Mesh(new three.BoxGeometry(700,50,view,500),new three.MeshPhysicalMaterial({map:new three.TextureLoader().load(groundImg),color:0x999999}))
+var right = new three.Mesh(new three.BoxGeometry(pwidth,100,view,500),new three.MeshPhysicalMaterial({color:0x555555}))
 right.position.y = 1-ctop
-right.position.x = -1550
+right.position.x = 1-((pwidth)+300)
 scene.add(right)
 restarti(true)
 
@@ -755,22 +764,14 @@ function controlCar(e){
     }
 
     var el
-    flyyou.forEach(e =>{ 
-      if (e.id == youl.getCurrentCar()){
-        el = e
-      }
-      console.log("e.id",(e.id == youl.getCurrentCar()))
-    }
-    )
-    
-    console.log("currentcar:",youl.getCurrentCar());
-    
-    console.log("true:",el);
+    el = document.getElementById(youl.getCurrentCar())
 
     
-    if (el){if (e.toLowerCase() == "t"){
-      fly = !fly
+    if (el.classList.contains("fly")){
       t.classList.remove("none")
+      if (e.toLowerCase() == "t"){
+      fly = !fly
+      
       console.log("fly: ",fly);
 
       }
@@ -838,7 +839,14 @@ function animate(){
   }}else{
   speed = 0
   }
-  if (you){if (fly){
+  if (you){
+    if (document.getElementById(youl.getCurrentCar()).classList.contains("fly")){
+      document.getElementById("T").classList.remove("none")
+    }else{
+      document.getElementById("T").classList.add("none")
+      fly = false
+    }
+    if (fly){
 
       if (yourlaw.position.y < 300){
         yourlaw.position.y += 1
@@ -860,7 +868,7 @@ function animate(){
   }
 
   scene.position.x = 1-yourlaw.position.x
-   scene.position.z = 1-(yourlaw.position.z-(yi*2))
+   scene.position.z = 1-(yourlaw.position.z-(yi-100))
    scene.position.y = 1-(yourlaw.position.y+(ctop))
 }
   // camera.position.z -= 3
@@ -908,6 +916,10 @@ function animate(){
 
   leftbs.UpdateBuildingZplus(speed)
   rightbs.UpdateBuildingZplus(speed)
+  /* for(var i in bss){
+    var g = bss[i]
+    g.UpdateBuildingZplus(speed)
+  } */
 
   for (var o in treeslaw){
     treeslaw[o].position.z += speed
