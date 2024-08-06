@@ -1,3 +1,19 @@
+/*
+#         ____  _____ ____  ____  ____   ___ ___ ____    ____   ___   ____ _  __
+#        |  _ \| ____/ ___||  _ \|  _ \ / _ \_ _|  _ \  |  _ \ / _ \ / ___| |/ /
+#        | | | |  _| \___ \| | | | |_) | | | | || | | | | |_) | | | | |   | ' /
+#        | |_| | |___ ___) | |_| |  _ <| |_| | || |_| | |  _ <| |_| | |___| . \
+#        |____/|_____|____/|____/|_| \_\\___/___|____/  |_| \_\\___/ \____|_|\_\
+#      
+#         ____   ___  ____   ____ _____
+#        |  _ \ / _ \|  _ \ / ___| ____|
+#        | | | | | | | | | | |  _|  _|
+#        | |_| | |_| | |_| | |_| | |___
+#        |____/ \___/|____/ \____|_____|   ■■■■■■■■■■■ DESDROID INC ®️ ■■■■■■■■■■■
+#        
+*/
+
+
 import './style.css'
 
 import * as three from 'three'
@@ -25,6 +41,7 @@ var running = false
 var row = false
 var paused = false
 var fly = false
+
 const panel = document.getElementById('panel')
 const audio = document.createElement("audio")
 const logo = document.getElementById("logo")
@@ -43,7 +60,7 @@ const restart = document.getElementById("restart")
 document.body.appendChild(audio)
 audio.src = '/bt/VI.mp3'
 audio.volume -= 0.4
-var lim = -1000
+var lim = 50
 audio.loop = true
 
 const treegltf = "bt/tree2.glb"
@@ -84,6 +101,7 @@ const control = new OrbitControls(camera,display.domElement)
 const law = new cannon.World({gravity:new cannon.Vec3(0,-10000,0)})
 const rh = document.getElementById("rh")
 const audio2 = document.createElement("audio")
+
 document.body.appendChild(audio2)
 audio2.src = '/bt/carcrash.wav'
 audio2.volume -= 0.1
@@ -130,7 +148,8 @@ function getHighScore(){
 
 
 
-var speed = 30;
+var speed = 10;
+var pspeed = speed;
 var hits = 0
 var maxhits = 0
 var ctop = 200
@@ -143,13 +162,13 @@ var you,yourlaw,mixer
 
 
 const light = new three.AmbientLight()
-light.intensity = 2.50
+light.intensity = 1.50
 // light.intensity = 0 
 scene.add(light)
 const sun =  new three.PointLight(0xffd7a0,1000,view)
 sun.intensity = 600000000
 sun.position.y += 8000
-sun.position.z = 1000
+sun.position.z = -3000
 sun.position.x += 1000
 
 scene.add(sun)
@@ -381,6 +400,7 @@ function topause(bool,crashed = false){
     pauseshow.innerText = "CRASHED"
     restarti(true)
   }
+  
   paused = bool
 }
 
@@ -415,6 +435,7 @@ function reloadscore(num){
   iscore = num
   score.innerText = "Score: "+iscore
   highscore.style.animationPlayState = "paused"
+
   if (iscore > getHighScore()){
     setHighScore(iscore)
     if (getHighScore() > 100)
@@ -439,6 +460,7 @@ function restarti(bool = false){
   for (var i=0;i<=10;i++){
     createEnys()
   }
+
   if (yourlaw){
     yourlaw.position.z = yi
     yourlaw.position.x = 0
@@ -455,9 +477,11 @@ rh.addEventListener("click",e=>{setHighScore(0);reloadscore(0)})
 //!  Main
 
 updateLaw(groundlaw,ground)
+
 const bnum = 50;
 var leftbs = new BUILDINGS(bnum,-2300)
 var rightbs= new BUILDINGS(bnum,2300)
+
 var ana
 window.addEventListener("click",()=>{
   try{
@@ -574,15 +598,19 @@ class YOURS{
         scene.remove(you)
         law.removeBody(yourlaw)
       }
+
       you = e.scene
       var width = 60
       var height = 70
       var d = 10
+
       you.scale.copy(new three.Vector3(width,height,width))
+
       yourlaw = new cannon.Body({
         shape:new cannon.Box(new cannon.Vec3(width-d,height,width-d))
         ,mass:10
       })
+
       yourlaw.position.y += (height/2)-ctop
       scene.add(you)
       law.addBody(yourlaw)
@@ -647,6 +675,7 @@ cb.addEventListener("click",e=>{
   if (youl.loading){}else{load(false)}
   carc.classList.add("none")
 })
+
 cac.addEventListener("click",e=>{
   load(true)
   carc.classList.remove("none")
@@ -672,22 +701,35 @@ function controlCar(e){
     
     if (!paused){if (e == "ArrowRight"){
       if (yourlaw.position.x > lll){}else{
-          yourlaw.quaternion.y += anginc
-          
+          if (fly){
+
+          }else{
+            yourlaw.quaternion.y += anginc
+          }
         yourlaw.position.x += leftspeed
+      }
+      if (fly){
+        yourlaw.quaternion.z -= anginc
       }
     }else if(e == "ArrowLeft"){
       if (yourlaw.position.x < 1-lll){}else{
-          yourlaw.quaternion.y -= anginc
+          if (fly){
+            
+          }else{
+            yourlaw.quaternion.y -= anginc
+          }
         yourlaw.position.x -= leftspeed
         
+      }
+      if (fly){
+        yourlaw.quaternion.z += anginc
       }
     }else{
       // yourlaw.quaternion.y = 0
     }
     if (e == "ArrowUp"){
-      if (yourlaw.position.z < lim){}else{
-        yourlaw.position.z -= 10
+      if (pspeed > lim){}else{
+        pspeed += 1
         sp = false
       }
     }
@@ -702,6 +744,7 @@ function controlCar(e){
     if (e.toLowerCase() == "x"){
       Recoil()
     }
+
     var el
     flyyou.forEach(e =>{ 
       if (e.id == youl.getCurrentCar()){
@@ -719,11 +762,12 @@ function controlCar(e){
     if (el){if (e.toLowerCase() == "t"){
       fly = !fly
       console.log("fly: ",fly);
-      
-      
-    }}else{
+
+      }
+    }else{
       fly = false
     }
+
     if (e.toLowerCase() == "m"){
       if (ap){
         audio.play()
@@ -734,12 +778,13 @@ function controlCar(e){
       }
       ap = !ap
     }
+
   if (fly){
     t.style.backgroundColor = "rgb(0, 77, 98)"
   }else{
     t.style.backgroundColor = "rgba(0, 21, 27, 0.658)"
    }
-   scene.position.x = 1-yourlaw.position.x
+   
   }}
 }
 
@@ -778,12 +823,12 @@ function animate(){
   if(mixer)
     mixer.update(clock.getDelta());
   if (!paused){if(you){
-    if(yourlaw.position.z < 0){speed = -((yourlaw.position.z)/20)}else{
-      speed = 20
-    }}}else{
+    speed = pspeed
+  }}else{
   speed = 0
   }
   if (you){if (fly){
+
       if (yourlaw.position.y < 300){
         yourlaw.position.y += 1
         }
@@ -791,27 +836,36 @@ function animate(){
         yourlaw.position.z -= 1
         }
         yourlaw.mass = 0
-        lim = -3000
+        lim = 100
   }else{
+
     if (yourlaw.position.y > 0){
       yourlaw.position.y -= 1
       }else if (yourlaw.position.y == 0){
         yourlaw.mass = 10
       }
       yourlaw.mass = 10
-      lim = -1000
-  }}
+      lim = 50
+  }
+
+  scene.position.x = 1-yourlaw.position.x
+   scene.position.z = 1-(yourlaw.position.z-(yi*2))
+   scene.position.y = 1-(yourlaw.position.y+(ctop))
+}
   // camera.position.z -= 3
   if (audio.paused && !ap){
     try{audio.play()}catch(DOMException){}
   }
 
   if (sp){
-    if (yourlaw.position.z >= yi || (fly && yourlaw.position.z > -600) ){
+    if (pspeed <= 10 ){
       sp = false
+      pspeed = 10
     }else{
-      yourlaw.position.z += 10
+      pspeed -= 1
     }
+    console.log(speed);
+    
   }
   if (yourlaw){
     if (yourlaw.position.x > lll){
@@ -823,11 +877,18 @@ function animate(){
     if (yourlaw.position.z > yi){
       yourlaw.position.z = yi
     }
-    if (yourlaw.quaternion.y > 0){
+    if (fly){
+      if (yourlaw.quaternion.z > 0){
+        yourlaw.quaternion.z -= 0.001
+      }else if (yourlaw.quaternion.z < 0){
+        yourlaw.quaternion.z += 0.001
+      }
+    }else
+    {if (yourlaw.quaternion.y > 0){
       yourlaw.quaternion.y -= 0.001
     }else if (yourlaw.quaternion.y < 0){
       yourlaw.quaternion.y += 0.001
-    }
+    }}
   }
   groundlaw.position.z += speed
   if (groundlaw.position.z > l+1000){
@@ -850,6 +911,7 @@ function animate(){
     if(ana){
       var num = Math.ceil(ana.Scale(200,100))
       logo.style.width = num+"px"
+      sun.intensity = Math.ceil(ana.Scale(600000000,100000000))
     }
     if (enyslaw[o].position.z > 0){
       enyslaw[o].position.z = 1-((((enys.length)*(enywidth+1000))+enywidth))
