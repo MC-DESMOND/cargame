@@ -172,7 +172,7 @@ scene.add(light)
 const sun =  new three.PointLight(0xffe7c0,1000,view)
 sun.intensity = 600000000
 sun.position.y += 8000
-sun.position.z = -3000
+sun.position.z = -1000
 sun.position.x += 1000
 
 scene.add(sun)
