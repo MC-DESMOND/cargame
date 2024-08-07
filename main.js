@@ -27,6 +27,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
  
 import groundImg from './bt/road.png'
 import rockImg from './bt/rock.png'
+import skyImg from './bt/sky.png'
 import CITYView from './bt/bg.png'
 
 import bt1 from './bt/bt1.png'
@@ -94,7 +95,7 @@ var treewidth = 100
 var enywidth = 100
 const view = 50000
 var lll = 700
-
+var flymax = 300*4
 const scene = new three.Object3D();
 const world = new three.Scene();
 const canvas = document.getElementById("app")
@@ -168,7 +169,7 @@ const light = new three.AmbientLight()
 light.intensity = 1.50
 // light.intensity = 0 
 scene.add(light)
-const sun =  new three.PointLight(0xffd7a0,1000,view)
+const sun =  new three.PointLight(0xffe7c0,1000,view)
 sun.intensity = 600000000
 sun.position.y += 8000
 sun.position.z = -3000
@@ -409,29 +410,92 @@ function topause(bool,crashed = false){
 }
 
 
-function createEnys(){
-  var width = 100
-  var height = 100
-  var zwidth = width*3
-  var zheight = height*3
-  var enyBound = [width,height,zwidth,zheight]
-  var enyGeo = new three.BoxGeometry(...enyBound)
-  var enyMat = new three.MeshPhysicalMaterial({map:new three.TextureLoader().load(rockImg)})
-  var eny = new three.Mesh(enyGeo,enyMat)
-  var enylaw = new cannon.Body({shape:new cannon.Box(new cannon.Vec3(...[width-30,height,zwidth,zheight])),mass:10})
-  eny.position.z = (1-(((enyslaw.length)*(width+1000))+width))-5000
-  eny.position.y += (height/2)-ctop
-  var l = lll
-  eny.position.x = (1-((Math.random()*(l*2))))+l
 
-  updateLaw(enylaw,eny)
-  scene.add(eny)
-  law.addBody(enylaw)
-  enys.push(eny)
-  enyslaw.push(enylaw)
-  enyslawsid.push(enylaw.id)
+class Enys{
+  width
+  height
+  enyslist = []
+  lawlist = []
+  ycoord = 0
+  xmax = 0
+  texture
+  mass
+  enyMat
+  enyGeo
+  length
+  objectDict = {
+    circle: three.CircleGeometry,
+    box: three.BoxGeometry
+  }
+  constructor(ycoord,xmax,length,texture,diameter,object,gravitate = true){
+    this.xmax = xmax
+    this.ycoord = ycoord
+    this.texture = texture
+    this.width = diameter
+    this.height = diameter
+    this.length = length
+    this.mass = gravitate ? 10 : 0
+    this.enyMat = new three.MeshPhysicalMaterial({map:this.texture})
+    this.enyGeo = new this.objectDict[object](...[diameter,diameter,diameter,diameter])
+    console.log("mass",this.mass);
+    
 
+  }
+  
+  create(){
+    for(var i=0 ;i<=this.length; i++){
+      this.build()
+    }
+  }
+  delete(){
+    for(var i=0;i<this.lawlist.length;i++){
+      scene.remove(this.enyslist[i])
+      law.removeBody(this.lawlist[i])
+    }
+    this.enyslist = []
+    this.lawlist = []
+  }
+
+  build(xmax = null){
+    this.xmax = xmax ? xmax : this.xmax
+      var eny = new three.Mesh(this.enyGeo,this.enyMat)
+      var enylaw = new cannon.Body({shape:new cannon.Box(new cannon.Vec3(...[this.width-30,this.height,this.width])),mass:this.mass})
+      eny.position.z = (1-(((this.lawlist.length)*(this.width+1000))+this.width))-5000
+      eny.position.y = this.ycoord
+      var l = this.xmax
+      eny.position.x = (1-((Math.random()*(l*2))))+l
+
+      updateLaw(enylaw,eny)
+      scene.add(eny)
+      law.addBody(enylaw)
+      this.enyslist.push(eny)
+      this.lawlist.push(enylaw)
+      enyslawsid.push(enylaw.id)
+  }
+
+  Update(xmax = null){
+    this.xmax = xmax ? xmax : this.xmax
+    if (this.lawlist.length > 2){for (var o in this.lawlist){
+      this.lawlist[o].position.z += speed
+      
+      if (this.lawlist[o].position.z > 0){
+        this.lawlist[o].position.z = 1-((((this.enyslist.length)*(this.width+1000))+this.width))
+        
+        // this.lawlist[o].position.y = iscore
+        this.lawlist[o].position.x = (1-((Math.random()*(this.xmax*2))))+this.xmax
+        reloadscore(iscore+1)
+      }
+      updateObj(this.lawlist[o],this.enyslist[o])
+    }}
+  }
 }
+
+
+var landEnys = new Enys((100/2)-ctop,lll,15,new three.TextureLoader().load(rockImg),100,"box",true)
+landEnys.create()
+var airEnys = new Enys(flymax,lll,15,new three.TextureLoader().load(skyImg),100,"circle",false)
+airEnys.create()
+
 topause(true)
 
 
@@ -452,18 +516,11 @@ function reloadscore(num){
 reloadscore(0)
 
 function restarti(bool = false){
-  if (enyslaw.length > 2){for (var i in enyslaw){
-    scene.remove(enys[i])
-    law.removeBody(enyslaw[i])
-    
-  }}
 
-  enys = []
-  enyslaw = []
-  enyslawsid = []
-  for (var i=0;i<=15;i++){
-    createEnys()
-  }
+  airEnys.delete()
+  landEnys.delete()
+  airEnys.create()
+  landEnys.create()
 
   if (yourlaw){
     yourlaw.position.z = yi
@@ -848,8 +905,10 @@ function animate(){
     }
     if (fly){
 
-      if (yourlaw.position.y < 300){
-        yourlaw.position.y += 1
+      if (yourlaw.position.y < flymax){
+        yourlaw.position.y += 10
+        }else{
+          yourlaw.position.y = flymax
         }
       if (yourlaw.position.z > -600){
         yourlaw.position.z -= 1
@@ -916,6 +975,8 @@ function animate(){
 
   leftbs.UpdateBuildingZplus(speed)
   rightbs.UpdateBuildingZplus(speed)
+  landEnys.Update()
+  airEnys.Update()
   /* for(var i in bss){
     var g = bss[i]
     g.UpdateBuildingZplus(speed)
@@ -928,23 +989,13 @@ function animate(){
   }
   updateObj(treeslaw[o],trees[o])
   }
+  if(ana){
+    var num = Math.ceil(ana.Scale(200,100))
+    logo.style.width = num+"px"
+    sun.intensity = Math.ceil(ana.Scale(600000000,100000000))
+  }
 
-  if (enyslaw[0]){for (var o in enyslaw){
-    enyslaw[o].position.z += speed
-    if(ana){
-      var num = Math.ceil(ana.Scale(200,100))
-      logo.style.width = num+"px"
-      sun.intensity = Math.ceil(ana.Scale(600000000,100000000))
-    }
-    if (enyslaw[o].position.z > 0){
-      enyslaw[o].position.z = 1-((((enys.length)*(enywidth+1000))+enywidth))
-      
-      // enyslaw[o].position.y = iscore
-      enyslaw[o].position.x = (1-((Math.random()*(lll*2))))+lll
-      reloadscore(iscore+1)
-    }
-    updateObj(enyslaw[o],enys[o])
-  }}
+  
 
   updateObj(groundlaw,ground)
   if (you)
