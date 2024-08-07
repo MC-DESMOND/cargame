@@ -905,7 +905,7 @@ function animate(){
     }
     if (fly){
 
-      if (yourlaw.position.y < flymax){
+      if (yourlaw.position.y < flymax-100){
         yourlaw.position.y += 10
         }else{
           yourlaw.position.y = flymax
