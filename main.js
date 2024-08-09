@@ -60,6 +60,7 @@ const exp = document.getElementById("exp")
 const pbar = document.getElementById("pbspan")
 const pauseshow = document.getElementById("s")
 const restart = document.getElementById("restart")
+const introVid = document.getElementById("intro-vid")
 
 document.body.appendChild(audio)
 audio.src = '/bt/VI.mp3'
@@ -68,7 +69,7 @@ var lim = 50
 audio.loop = true
 
 const treegltf = "bt/tree2.glb"
-
+function Main(){
 var buildingsTex = []
 
 buildingsTex.push(
@@ -91,10 +92,10 @@ buildingsTex.push(
 var yi = -300
 var iscore = 0
 var tinp = []
-var treewidth = 100
+var treewidth = 300
 var enywidth = 100
-const view = 50000
-var lll = 700
+const view = 100000
+var lll = 1500
 var flymax = 300*4
 const scene = new three.Object3D();
 const world = new three.Scene();
@@ -150,8 +151,6 @@ function getHighScore(){
   return hs
 }
 
-
-
 var speed = 10;
 var pspeed = speed;
 var hits = 0
@@ -162,6 +161,7 @@ var treeslaw = []
 var enys = []
 var enyslaw = []
 var enyslawsid = []
+var gemslawsid = []
 var you,yourlaw,mixer
 
 
@@ -170,7 +170,7 @@ light.intensity = 1.50
 // light.intensity = 0 
 scene.add(light)
 const sun =  new three.PointLight(0xffe7c0,1000,view)
-sun.intensity = 600000000
+sun.intensity = 300000000
 sun.position.y += 8000
 sun.position.z = -1000
 sun.position.x += 1000
@@ -179,7 +179,11 @@ scene.add(sun)
 scene.add(new three.PointLightHelper(sun,100))
 
 const groundgeo =  new three.PlaneGeometry(40000,view)
-const groundmaterial = new three.MeshPhysicalMaterial({map:new three.TextureLoader().load(groundImg),color:0x333333,side:three.DoubleSide})
+const groundtex = new three.TextureLoader().load(groundImg)
+groundtex.wrapS = groundtex.wrapT = three.RepeatWrapping
+groundtex.repeat.setX(100)
+groundtex.repeat.setY(100)
+const groundmaterial = new three.MeshPhysicalMaterial({map:groundtex,side:three.DoubleSide,emissive:0x222222})
 const ground = new three.Mesh(groundgeo,groundmaterial)
 ground.rotation.x =-0.5 * Math.PI
 ground.position.y = -ctop
@@ -208,11 +212,12 @@ load(true)
 
 
 function Recoil(){
-  if (you){you.rotation.y  = 0 
-  you.rotation.x  = 0 
-  you.rotation.z  = 0 
-  you.position.z = yi
-  updateLaw(yourlaw,you)
+  if (you){yourlaw.quaternion.y  = 0 
+  yourlaw.quaternion.x  = 0 
+  yourlaw.quaternion.z  = 0 
+  yourlaw.position.z = yi
+  
+  
 }}
 
 
@@ -220,7 +225,7 @@ class BUILDINGS{
   buildings = []
   buildingslaw = []
   binp = []
-  width = 600
+  width = 2000
 
   constructor(length , z){
     for (var i=0;i<length;i++){
@@ -232,7 +237,7 @@ class BUILDINGS{
   }
 
   BuildBuilding(xmin){
-    const height = (Math.random()*3000)+1000
+    const height = (Math.random()*6000)+2000
     const buildingGeo = new three.BoxGeometry(this.width,height,this.width,height)
     var texIndex = Math.ceil(Math.random()*buildingsTex.length-1)
     const buildingTex = buildingsTex[texIndex]
@@ -241,7 +246,7 @@ class BUILDINGS{
     const buildinglaw = new cannon.Body({shape: new cannon.Box(new cannon.Vec3(height,this.width,0))})
 
     building.position.x -= xmin
-    building.position.z = 1-(((this.buildings.length)*(this.width+100))+this.width)
+    building.position.z = 1-(((this.buildings.length)*(this.width+300))+this.width)
     building.position.y = (height/2)-ctop
 
     updateLaw(buildinglaw,building)
@@ -264,34 +269,6 @@ class BUILDINGS{
   }
 
 }
-
-// setTimeout(e=>{
-  
-// },5000)
-
-// class OBJ{
-//   loader = new OBJLoader();
-//   object
-//   constructor(name , handler){
-//     this.loader.load( name,
-//       (object)=>{
-//         this.object = object
-//         handler(this.object)
-//       },
-//       function ( xhr ) {
-
-//         console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
-    
-//       },
-//       function ( error ) {
-
-//         console.log( 'An error happened' );
-    
-//       }
-//     )
-//   }
-// }
-
 
 
 
@@ -389,6 +366,7 @@ function topause(bool,crashed = false){
       reloadscore(0)
       Recoil()
       pspeed = 10
+      
     }
 
     panel.style.height = "0"
@@ -418,59 +396,72 @@ class Enys{
   lawlist = []
   ycoord = 0
   xmax = 0
+  gap = 500
   texture
   mass
   enyMat
   enyGeo
+  incScore = true
   length
   objectDict = {
     circle: three.CircleGeometry,
-    box: three.BoxGeometry
+    box: three.BoxGeometry,
+    poly: three.ConeGeometry
   }
-  constructor(ycoord,xmax,length,texture,diameter,object,gravitate = true){
+  isgem = false
+  rz = 0
+  constructor(ycoord,xmax,length,texture,diameter,object,gravitate = true ,rz = 0,isgem=false){
     this.xmax = xmax
     this.ycoord = ycoord
     this.texture = texture
     this.width = diameter
     this.height = diameter
     this.length = length
+    this.isgem = isgem
+    this.rz = rz
+    this.created = false
     this.mass = gravitate ? 10 : 0
     this.enyMat = new three.MeshPhysicalMaterial({map:this.texture})
     this.enyGeo = new this.objectDict[object](...[diameter,diameter,diameter,diameter])
+
     console.log("mass",this.mass);
     
 
   }
   
   create(){
-    for(var i=0 ;i<=this.length; i++){
+    if (!this.created){for(var i=0 ;i<=this.length; i++){
       this.build()
-    }
+    }this.created = true}
+    
   }
   delete(){
-    for(var i=0;i<this.lawlist.length;i++){
+    if (this.created){for(var i=0;i<this.lawlist.length;i++){
       scene.remove(this.enyslist[i])
       law.removeBody(this.lawlist[i])
     }
     this.enyslist = []
     this.lawlist = []
+    this.created = false
+  
+  }
   }
 
   build(xmax = null){
     this.xmax = xmax ? xmax : this.xmax
       var eny = new three.Mesh(this.enyGeo,this.enyMat)
       var enylaw = new cannon.Body({shape:new cannon.Box(new cannon.Vec3(...[this.width-30,this.height,this.width])),mass:this.mass})
-      eny.position.z = (1-(((this.lawlist.length)*(this.width+1000))+this.width))-5000
+      eny.position.z = (1-(((this.lawlist.length)*(this.width+this.gap))+this.width))-5000
       eny.position.y = this.ycoord
       var l = this.xmax
       eny.position.x = (1-((Math.random()*(l*2))))+l
-
+      eny.rotateZ(this.rz)
       updateLaw(enylaw,eny)
       scene.add(eny)
       law.addBody(enylaw)
       this.enyslist.push(eny)
       this.lawlist.push(enylaw)
-      enyslawsid.push(enylaw.id)
+      if (this.isgem){gemslawsid.push(enylaw.id)}else{enyslawsid.push(enylaw.id)}
   }
 
   Update(xmax = null){
@@ -479,22 +470,32 @@ class Enys{
       this.lawlist[o].position.z += speed
       
       if (this.lawlist[o].position.z > 0){
-        this.lawlist[o].position.z = 1-((((this.enyslist.length)*(this.width+1000))+this.width))
+        this.lawlist[o].position.z = 1-((((this.enyslist.length)*(this.width+this.gap))+this.width))
         
         // this.lawlist[o].position.y = iscore
         this.lawlist[o].position.x = (1-((Math.random()*(this.xmax*2))))+this.xmax
-        reloadscore(iscore+1)
+        if (this.incScore){reloadscore(iscore+1)}
       }
       updateObj(this.lawlist[o],this.enyslist[o])
     }}
   }
 }
 
-
-var landEnys = new Enys((100/2)-ctop,lll,15,new three.TextureLoader().load(rockImg),100,"box",true)
+var enys = 100
+var gems = 100
+var landEnys = new Enys((100/2)-ctop,lll,enys,new three.TextureLoader().load(rockImg),100,"box",true)
 landEnys.create()
-var airEnys = new Enys(flymax,lll,15,new three.TextureLoader().load(skyImg),100,"circle",false)
-airEnys.create()
+var airEnys = new Enys(flymax,lll,enys,new three.TextureLoader().load(skyImg),100,"poly",false,80*2)
+var gemlEnys = new Enys((100/2)-ctop,lll,gems,new three.TextureLoader().load(skyImg),100,"poly",true,80*2,true)
+var gemaEnys = new Enys(flymax,lll,gems,new three.TextureLoader().load(skyImg),100,"poly",false,80*2,true)
+gemaEnys.gap = Math.ceil(gemaEnys.gap/2)
+gemlEnys.gap = Math.ceil(gemlEnys.gap/2)
+// gemaEnys.create()
+// gemlEnys.create()
+
+
+
+// reloadscore(iscore+1)
 
 topause(true)
 
@@ -510,7 +511,7 @@ function reloadscore(num){
     {highscore.style.animationPlayState = "running"}
   }
   // setHighScore(0)
-  highscore.innerText = "High score: "+getHighScore()
+  highscore.innerText = "Highest Score: "+getHighScore()
 }
 
 reloadscore(0)
@@ -519,8 +520,14 @@ function restarti(bool = false){
 
   airEnys.delete()
   landEnys.delete()
+  gemaEnys.delete()
+  gemlEnys.delete()
+
   airEnys.create()
   landEnys.create()
+  /* gemaEnys.create()
+  gemlEnys.create() */
+  
 
   if (yourlaw){
     yourlaw.position.z = yi
@@ -538,10 +545,10 @@ rh.addEventListener("click",e=>{setHighScore(0);reloadscore(0)})
 //!  Main
 
 updateLaw(groundlaw,ground)
-
-const bnum = 50;
-var leftbs = new BUILDINGS(bnum,-2300)
-var rightbs= new BUILDINGS(bnum,2300)
+const roadspace = lll + 1600
+const bnum = 30;
+var leftbs = new BUILDINGS(bnum,Number(`-${roadspace+2000}`))
+var rightbs= new BUILDINGS(bnum,roadspace+2000)
 
 var  bss = []
 
@@ -573,22 +580,26 @@ window.addEventListener("click",()=>{
 
 
 
-for (var i=0;i<30;i++){
-  buildTree(-1500)
-  buildTree(1500)
+for (var i=0;i<100;i++){
+  buildTree(Number(`-${roadspace-800}`))
+  buildTree(roadspace-800)
   
 }
-var pwidth = 2000
-var left = new three.Mesh(new three.BoxGeometry(pwidth,100,view,500),new three.MeshPhysicalMaterial({color:0x555555}))
-left.position.y = 1-ctop
-left.position.x = (pwidth)+300
-// left.position.x = 1550
-scene.add(left)
+const ptex = new three.TextureLoader().load(groundImg)
+ptex.wrapS = ptex.wrapT = three.RepeatWrapping
+ptex.repeat.setX(10)
+ptex.repeat.setY(100)
+var pwidth = 600
+// var left = new three.Mesh(new three.BoxGeometry(pwidth,100,view,500),new three.MeshPhysicalMaterial({map:ptex/* ,color:0x555555 */}))
+// left.position.y = 1-ctop
+// left.position.x = roadspace-800
+// // left.position.x = roadspace-800
+// scene.add(left)
 
-var right = new three.Mesh(new three.BoxGeometry(pwidth,100,view,500),new three.MeshPhysicalMaterial({color:0x555555}))
-right.position.y = 1-ctop
-right.position.x = 1-((pwidth)+300)
-scene.add(right)
+// var right = new three.Mesh(new three.BoxGeometry(pwidth,100,view,500),new three.MeshPhysicalMaterial({map:ptex/* ,color:0x555555 */}))
+// right.position.y = 1-ctop
+// right.position.x = Number(`-${roadspace-800}`)
+// scene.add(right)
 restarti(true)
 
 
@@ -694,6 +705,11 @@ class YOURS{
       yourlaw.addEventListener("collide",e=>{
         console.log("colide",e);
         console.log("colide id",e.body.id);
+        if (gemslawsid.includes(e.body.id)){
+          reloadscore(iscore+1)
+          var gem = law.getBodyById(e.body.id)
+          gem.position.z = 100
+        }
         if (enyslawsid.includes(e.body.id)){
           console.log("includes");
 
@@ -706,6 +722,7 @@ class YOURS{
               exp.classList.remove("none")
               yourlaw.position.x = 0
               Recoil()
+              fly = false
               setTimeout(() => {
                 exp.classList.add("none")
                 exp.src = ""
@@ -765,8 +782,9 @@ groundlaw.position.z = l
 
 
 function controlCar(e){
-  if(running){var leftspeed = 30
+  if(running){var leftspeed = 20
   var anginc = 0.01
+  var nity = 0.3
   var t = document.getElementById("T")
   var flyyou = document.querySelectorAll(".fly")
   console.log(e)
@@ -775,29 +793,31 @@ function controlCar(e){
   { 
     
     if (!paused){if (e == "ArrowRight"){
-      if (yourlaw.position.x > lll){}else{
+      if (yourlaw.position.x >= lll){yourlaw.position.x = lll}else{
           if (fly){
 
           }else{
-            yourlaw.quaternion.y += anginc
+            if (yourlaw.quaternion.y >= nity){}else{yourlaw.quaternion.y += anginc}
           }
         yourlaw.position.x += leftspeed
       }
       if (fly){
-        yourlaw.quaternion.z -= anginc
+        if (yourlaw.quaternion.z > 0){yourlaw.quaternion.z = 0}
+        if (yourlaw.quaternion.z <= Number(`-${nity}`)){}else{yourlaw.quaternion.z -= anginc}
       }
     }else if(e == "ArrowLeft"){
-      if (yourlaw.position.x < 1-lll){}else{
+      if (yourlaw.position.x <= Number(`-${lll}`)){yourlaw.position.x = Number(`-${lll}`)}else{
           if (fly){
             
           }else{
-            yourlaw.quaternion.y -= anginc
+            if (yourlaw.quaternion.y <= Number(`-${nity}`)){}else{yourlaw.quaternion.y -= anginc}
           }
         yourlaw.position.x -= leftspeed
         
       }
       if (fly){
-        yourlaw.quaternion.z += anginc
+        if (yourlaw.quaternion.z < 0){yourlaw.quaternion.z = 0}
+        if (yourlaw.quaternion.z >= nity){}else{yourlaw.quaternion.z += anginc}
       }
     }else{
       // yourlaw.quaternion.y = 0
@@ -811,7 +831,6 @@ function controlCar(e){
     else if (e == "ArrowDown"){
       sp = true
     }
-    console.log("yourlaw.quaternion.y:",yourlaw.quaternion.y)
     }if (e == " " || e == "p"){
       topause(!paused) 
       console.log(paused);   
@@ -849,8 +868,10 @@ function controlCar(e){
     }
 
   if (fly){
+    anginc = 0.015
     t.style.backgroundColor = "rgb(0, 77, 98)"
   }else{
+    anginc = 0.01
     t.style.backgroundColor = "rgba(0, 21, 27, 0.658)"
    }
    
@@ -887,6 +908,33 @@ function onresizeWin(){
   control.object = camera
 }
 
+
+function AntiGlitch(){
+  if (yourlaw && you){
+    if (yourlaw.position.x >= lll){
+      yourlaw.position.x = lll
+    }
+    if (yourlaw.position.x <= Number(`-${lll}`)){
+      yourlaw.position.x = Number(`-${lll}`)
+    }
+    if (yourlaw.position.z > yi){
+      yourlaw.position.z = yi
+    }
+    /* console.log("yourlaw.quaternion.y:",yourlaw.quaternion.y)
+    console.log("yourlaw.quaternion.x:",yourlaw.quaternion.x)
+    console.log("yourlaw.quaternion.z:",yourlaw.quaternion.z)
+    console.log("yourlaw.position.y:",yourlaw.position.y)
+    console.log("yourlaw.position.x:",yourlaw.position.x)
+    console.log("yourlaw.position.z:",yourlaw.position.z) */
+    if (yourlaw.position.y < -200 || yourlaw.position.y > 1220 ){
+    yourlaw.position.y = 0
+    fly = false
+    yourlaw.mass = 10
+  }
+
+  }
+}
+
 function animate(){
   requestAnimationFrame(animate)
   if(mixer)
@@ -896,6 +944,7 @@ function animate(){
   }}else{
   speed = 0
   }
+  AntiGlitch()
   if (you){
     if (document.getElementById(youl.getCurrentCar()).classList.contains("fly")){
       document.getElementById("T").classList.remove("none")
@@ -904,10 +953,13 @@ function animate(){
       fly = false
     }
     if (fly){
-
-      if (yourlaw.position.y < flymax-100){
+      airEnys.create()
+      landEnys.delete()
+      airEnys.incScore = true
+      landEnys.incScore = false
+      if (yourlaw.position.y < flymax){
         yourlaw.position.y += 10
-        }else{
+        }else if (yourlaw.position.y > flymax){
           yourlaw.position.y = flymax
         }
       if (yourlaw.position.z > -600){
@@ -916,13 +968,17 @@ function animate(){
         yourlaw.mass = 0
         lim = 100
   }else{
-
+    airEnys.delete()
+    landEnys.create()
+    airEnys.incScore = false
+    landEnys.incScore = true
     if (yourlaw.position.y > 0){
-      yourlaw.position.y -= 1
-      }else if (yourlaw.position.y == 0){
+      yourlaw.position.y -= 10
+      
+      }else if (yourlaw.position.y <= 0){
         yourlaw.mass = 10
       }
-      yourlaw.mass = 10
+      // yourlaw.mass = 10
       lim = 50
   }
 
@@ -945,28 +1001,23 @@ function animate(){
     console.log(speed);
     
   }
+  if (speed > lim){
+    speed -= 1
+  }
   if (yourlaw){
-    if (yourlaw.position.x > lll){
-      yourlaw.position.x = lll
+    
+    
+    if (yourlaw.quaternion.z > 0){
+      yourlaw.quaternion.z -= 0.001
+    }else if (yourlaw.quaternion.z < 0){
+      yourlaw.quaternion.z += 0.001
     }
-    if (yourlaw.position.x < 1-lll){
-      yourlaw.position.x = 1-lll
-    }
-    if (yourlaw.position.z > yi){
-      yourlaw.position.z = yi
-    }
-    if (fly){
-      if (yourlaw.quaternion.z > 0){
-        yourlaw.quaternion.z -= 0.001
-      }else if (yourlaw.quaternion.z < 0){
-        yourlaw.quaternion.z += 0.001
-      }
-    }else
-    {if (yourlaw.quaternion.y > 0){
+    
+    if (yourlaw.quaternion.y > 0){
       yourlaw.quaternion.y -= 0.001
     }else if (yourlaw.quaternion.y < 0){
       yourlaw.quaternion.y += 0.001
-    }}
+    }
   }
   groundlaw.position.z += speed
   if (groundlaw.position.z > l+1000){
@@ -977,6 +1028,8 @@ function animate(){
   rightbs.UpdateBuildingZplus(speed)
   landEnys.Update()
   airEnys.Update()
+  gemaEnys.Update()
+  gemlEnys.Update()
   /* for(var i in bss){
     var g = bss[i]
     g.UpdateBuildingZplus(speed)
@@ -992,7 +1045,7 @@ function animate(){
   if(ana){
     var num = Math.ceil(ana.Scale(200,100))
     logo.style.width = num+"px"
-    sun.intensity = Math.ceil(ana.Scale(600000000,100000000))
+    sun.intensity = Math.ceil(ana.Scale(300000000,10000000))
   }
 
   
@@ -1003,6 +1056,7 @@ function animate(){
 
   control.update()
   law.step(1/60)
+  
   display.render(world,camera)  
 }
 
@@ -1015,4 +1069,37 @@ window.addEventListener("keydown",e=>{
   controlCar(e.key)
 })
 
-animate()
+animate()}
+
+
+function SetRegularUser(Z1 = false){
+  localStorage.setItem("HasEnteredBefore",Z1?"1":"0")
+}
+
+function GetRegularUser(){
+ var hs = localStorage.getItem("HasEnteredBefore")
+ if (!hs){
+   SetRegularUser()
+   hs = GetRegularUser()
+ }
+ console.log("REGULAR USER: ",hs);
+ if (hs == "0"){
+   return false
+ }
+ else{
+   return true
+ }
+ 
+}
+// SetRegularUser(false)
+if (GetRegularUser()){
+ introVid.classList.add("none")
+ Main()
+}else{
+ introVid.play()
+ introVid.onpause = function () {
+   SetRegularUser(true)
+   window.location.reload()
+ }
+}
+
