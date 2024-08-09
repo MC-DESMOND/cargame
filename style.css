@@ -183,7 +183,7 @@ wrapper{
 }
 .title{
   text-align: center;
-  font-size: 70px;
+  font-size: 30px;
   font-weight: bolder;
   color: rgb(0, 238, 255);
   font-family: "Racing Sans One", inherit;
@@ -247,11 +247,27 @@ wrapper{
    ;
 }
 .introvid{
+  width: 100%;
+  height: 115%;
+  object-fit:cover;
+  translate: 0 -15%;
+}
+.ivw{
   z-index: 100;
-  position: fixed;
   width: 100%;
   height: 100%;
-  object-fit: fill;
+  position: fixed;
+  display: grid;
+  place-items: center;
+}
+.ttc{
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.696);
+  padding: 10px;
+  font-size: 20px;
+  z-index: 120;
+  font-weight: bolder;
+  color: rgba(255, 255, 255, 0.422);
 }
 .lw{
   position: absolute;

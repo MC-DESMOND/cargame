@@ -61,6 +61,8 @@ const pbar = document.getElementById("pbspan")
 const pauseshow = document.getElementById("s")
 const restart = document.getElementById("restart")
 const introVid = document.getElementById("intro-vid")
+const ivw = document.getElementById("ivw")
+const ttc = document.getElementById("ttc")
 
 document.body.appendChild(audio)
 audio.src = '/bt/VI.mp3'
@@ -1093,10 +1095,11 @@ function GetRegularUser(){
 }
 // SetRegularUser(false)
 if (GetRegularUser()){
- introVid.classList.add("none")
+ ivw.classList.add("none")
  Main()
 }else{
- introVid.play()
+ ivw.onclick = e=>{introVid.play();ttc.classList.add("none")}
+
  introVid.onpause = function () {
    SetRegularUser(true)
    window.location.reload()
