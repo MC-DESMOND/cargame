@@ -246,19 +246,38 @@ wrapper{
    border-color 0.3s ease-in-out
    ;
 }
+:root{
+  --bev:5%;
+  --slidera:4px;
+}
 .introvid{
   width: 100%;
   height: 100%;
   object-fit:cover;
   position: fixed;
+  /* clip-path: polygon(calc(var(--bev)) 0, */
+   /* calc(100% - var(--bev)) 0%,  */
+   /* 100% calc(var(--bev)), */
+   /* 100% calc(100% - var(--bev)), */
+    /* calc(100% - var(--bev)) 100%, */
+     /* calc(var(--bev)) 100%,  */
+     /* 0 calc(100% - var(--bev)), */
+     /* 0 calc(var(--bev)) */
+    /* ); */
+    /* box-shadow: 0px 0px 10px cyan; */
+  box-sizing: border-box;
+  /* background-color: cyan; */
+  /* padding: 3px; */
 }
 .ivw{
+  
   z-index: 100;
   width: 100%;
   height: 100%;
   position: fixed;
   display: grid;
   place-items: center;
+
 }
 .levelw{
   position: fixed;
@@ -288,7 +307,7 @@ wrapper{
 }
 .ttc{
   position: absolute;
-  background-color: rgba(0, 0, 0, 0.993);
+  background-color: rgba(0, 0, 0);
   width: 100%;
   height: 100%;
   display: flex;
@@ -297,9 +316,10 @@ wrapper{
   flex-direction: column;
   gap: 25px;
   font-size: 25px;
-  z-index: 120;
+  z-index: 20;
   font-weight: bolder;
   color: rgb(194, 236, 238);
+  
 }
 .ttci{
   content: "";
@@ -338,6 +358,52 @@ wrapper{
   gap: 6px;
   justify-content: center;
   padding-block: 5px;
+}
+@keyframes slide1 {
+
+  50%{
+    translate: 0% 100%;
+  }
+
+}
+@keyframes slide4 {
+
+  50%{
+    translate: 100% 0%;
+  }
+
+}
+.sliders{
+  display: block;
+  width:100px;
+  height:100px;
+  position: fixed;
+  background-color: rgba(0, 255, 255, 0.116);
+  z-index: 30;
+  clip-path: polygon(2% 0% , 100% 0% , calc(100% - 2%) 100%, 0% 100%, 2% 0%);
+}
+.slide1 , .slide2{
+  width: var(--slidera);
+  height: 50%;
+  right: 0;
+  top: 0;
+  animation: slide1 10s ease-in-out infinite;
+  animation-delay: var(--anid);
+}
+.slide3 , .slide4{
+  height: var(--slidera);
+  width: 50%;
+  top: 0;
+  left: 0;
+  animation: slide4 15s ease-in-out infinite;
+  animation-delay: var(--anid);
+}
+.slide1{
+  left: 0;
+}
+.slide4{
+  top: initial;
+  bottom: 0;
 }
 .logo{
   width: 100px;

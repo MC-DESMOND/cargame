@@ -238,7 +238,7 @@ class BUILDINGS{
   buildingslaw = []
   binp = []
   width = 2000
-
+  gap = 300
   constructor(length , z){
     for (var i=0;i<length;i++){
       this.BuildBuilding(z)
@@ -258,7 +258,7 @@ class BUILDINGS{
     const buildinglaw = new cannon.Body({shape: new cannon.Box(new cannon.Vec3(height,this.width,0))})
 
     building.position.x -= xmin
-    building.position.z = 1-(((this.buildings.length)*(this.width+300))+this.width)
+    building.position.z = 1-(((this.buildings.length)*(this.width+this.gap))+this.width)
     building.position.y = (height/2)-ctop
 
     updateLaw(buildinglaw,building)
@@ -275,6 +275,25 @@ class BUILDINGS{
       this.buildingslaw[o].position.z += z
     if (this.buildingslaw[o].position.z > 0){
       this.buildingslaw[o].position.z = this.binp[0]
+    }
+    var backelzfrontzabs
+    if (!paused){if (o > 0){
+      backelzfrontzabs = this.buildingslaw[o-1].position.z-this.buildingslaw[o].position.z
+      console.log("backelzfrontzabs init: "+o+": ",(this.buildingslaw[o-1].position.z-this.buildingslaw[o].position.z));
+     }else{
+      backelzfrontzabs = this.buildingslaw[this.buildingslaw.length-1].position.z-this.buildingslaw[o].position.z
+      console.log("backelzfrontzabs init "+o+": ",(this.buildingslaw[this.buildingslaw.length-1].position.z-this.buildingslaw[o].position.z));
+    }
+    backelzfrontzabs -= this.width
+
+    if (backelzfrontzabs < this.gap && backelzfrontzabs > Number(`-${this.width}`)){
+      this.buildingslaw[o].position.z += backelzfrontzabs-this.gap
+    }
+    
+    // this.buildingslaw[o].position.z -= (backelzfrontzabs - this.gap)
+    
+    console.log("backelzfrontzabs: "+o+": ",backelzfrontzabs-this.gap);
+    console.log("pos Z: "+o+": ",this.buildingslaw[o].position.z );
     }
     updateObj(this.buildingslaw[o],this.buildings[o])
     }
@@ -601,7 +620,7 @@ var  bss = []
 
 var ana
 window.addEventListener("click",()=>{
-  playclick()
+  // playclick()
   try{
     if (!ana){ana = new ANA(audio)}
     
@@ -875,6 +894,7 @@ function controlCar(e){
     }if (e == " " || e == "p"){
       topause(!paused) 
       console.log(paused);   
+      playclick()
     }
     if (e.toLowerCase() == "x"){
       Recoil()
@@ -888,7 +908,7 @@ function controlCar(e){
       t.classList.remove("none")
       if (e.toLowerCase() == "t"){
       fly = !fly
-      
+      playclick()
       console.log("fly: ",fly);
 
       }
@@ -1007,7 +1027,7 @@ function animate(){
         yourlaw.position.z -= 1
         }
         yourlaw.mass = 0
-        lim = 100
+        lim = 500
   }else{
     airEnys.delete()
     landEnys.create()
@@ -1132,7 +1152,7 @@ function GetRegularUser(){
  }
  
 }
-// SetRegularUser(false)
+SetRegularUser(false)
 if (GetRegularUser()){
  ivw.classList.add("none")
  Main()
@@ -1144,5 +1164,7 @@ if (GetRegularUser()){
    window.location.reload()
  }
 }
-
-document.body.addEventListener("keyup",playclick )
+document.querySelectorAll(".playclick").forEach(elt=>{
+  elt.addEventListener("click",e=>{playclick()})
+})
+// document.body.addEventListener("keyup",playclick )

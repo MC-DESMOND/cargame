@@ -5,9 +5,6 @@
     <link rel="icon" href="icon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>DESDROID Rock Dodge</title>
-    <!-- <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Racing+Sans+One&display=swap" rel="stylesheet"> -->
   </head>
   <body>
     <!-- <div>cargame</div> -->
@@ -48,7 +45,7 @@
         </div>
         
         
-        <div  id="play" class="play">
+        <div  id="play" class="play playclick">
           <div class=" mute none" id="ispaused">
            Music paused
           </div> 
@@ -96,8 +93,8 @@
       </div>
     </wrapper>
     <div class="exw"><img src="./bt/explode2.gif" id="exp" class="exp none" alt=""></div>
-    <div class="controls keys">
-      <div id="x" class="arrow akey"><svg  viewBox="0 0 90 90" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <div class="controls keys playclick">
+      <div id="x" class="arrow akey "><svg  viewBox="0 0 90 90" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
         <rect width="90" height="90" fill="url(#pattern0_355_3)"/>
         <defs>
         <pattern id="pattern0_355_3" patternContentUnits="objectBoundingBox" width="1" height="1">
@@ -108,7 +105,7 @@
         </svg>
         
 </div>
-      <div id="p" class="arrow akey"><svg  viewBox="0 0 90 90" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+      <div id="p" class="arrow akey "><svg  viewBox="0 0 90 90" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
         <rect width="90" height="90" fill="url(#pattern0_355_4)"/>
         <defs>
         <pattern id="pattern0_355_4" patternContentUnits="objectBoundingBox" width="1" height="1">
@@ -120,7 +117,7 @@
         
         
         </div>
-      <div id="T" class="arrow akey"><svg viewBox="0 0 90 90" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+      <div id="T" class="arrow akey "><svg viewBox="0 0 90 90" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
         <rect width="90" height="90" fill="url(#pattern0_437_55)"/>
         <defs>
         <pattern id="pattern0_437_55" patternContentUnits="objectBoundingBox" width="1" height="1">
@@ -132,7 +129,7 @@
         
         
         </div>
-      <div id="m" class="arrow akey"><svg viewBox="0 0 98 90" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+      <div id="m" class="arrow akey "><svg viewBox="0 0 98 90" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
         <rect width="90" height="90" fill="url(#pattern0_355_7)"/>
         <rect x="45" y="28" width="53" height="53" fill="url(#pattern1_355_7)"/>
         <defs>
@@ -164,7 +161,7 @@
         <path fill-rule="evenodd" d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8"/>
       </svg></div>
     </div>
-    <div id="carc" class="carc none">
+    <div id="carc" class="carc none playclick">
       <div class="ic">
         <div id="/bt/benz.glb" class="car"><img id="/bt/benz.glb" class="car-img" src="./bt/benz2.png" alt=""><div class="carname">Benz</div></div>
         <!-- <div id="/bt/lambo.glb" class="car"><img class="car-img" src="./bt/lambo2.png" alt=""><div class="carname">Lambo</div></div> -->
@@ -181,7 +178,7 @@
       <img src="./bt/slogo.png" class="ilogo"  alt="">
       <div class="pbar" value="0" max="100"  id="pbar"><span id="pbspan"></span></div>
      </div>
-     <div id="levelw" class="levelw">
+     <div id="levelw" class="levelw playclick">
       <div id="l1000" class=" level message tright">Beginner</div>
       <div id="l600" class=" level message tright">Intermidiate</div>
       <div id="l300" class=" level message tright">Expert</div>
@@ -190,12 +187,16 @@
      </div>
     <script type="module" defer src="/main.js"></script>
     <div class="ivw" id="ivw">
-      <span class="ttc" id="ttc"> WELCOME <img src="./bt/slogo.png" class="ttci" alt=""> <span class="ttct message tright">Tap to continue <div class="dotw">
+      <span class="ttc playclick" id="ttc"> WELCOME <img src="./bt/slogo.png" class="ttci" alt=""> <span class="ttct message tright">Tap to continue <div class="dotw">
         <div class="dot" style="--anidel:0.1s; "></div>
         <div class="dot" style="--anidel:0.5s;"></div>
         <div class="dot" style="--anidel:1s; "></div>
         <!-- <div class="dot" style="--anidel:1.4s; "></div> -->
       </div></span></span>
+      <!-- <span class="sliders slide1" style="--anid:0s;"></span> -->
+      <!-- <span class="sliders slide2" style="--anid:0.6s;"></span> -->
+      <!-- <span class="sliders slide3" style="--anid:0;"></span> -->
+      <!-- <span class="sliders slide4" style="--anid:0.8s;"></span> -->
       <video src="./bt/intro.mp4" id="intro-vid" class="introvid"></video>
     </div>
   </body>
