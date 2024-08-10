@@ -64,7 +64,8 @@ const restart = document.getElementById("restart")
 const introVid = document.getElementById("intro-vid")
 const ivw = document.getElementById("ivw")
 const ttc = document.getElementById("ttc")
-
+const levels = document.querySelectorAll(".level")
+const levelw = document.getElementById("levelw")
 document.body.appendChild(audio)
 document.body.appendChild(clicka)
 audio.src = '/bt/VI.mp3'
@@ -407,7 +408,7 @@ class Enys{
   lawlist = []
   ycoord = 0
   xmax = 0
-  gap = 500
+  gap = 1000
   texture
   mass
   enyMat
@@ -516,6 +517,24 @@ gemlEnys.gap = Math.ceil(gemlEnys.gap/2)
 // gemlEnys.create()
 
 
+levels.forEach(level=>{
+  level.onclick = e=>{
+    var gap = Number(level.id.replace('l',''))
+    airEnys.gap = gap
+    landEnys.gap = gap
+    restarti()
+  }
+})
+
+levelw.onclick = e=>{
+  if (levelw.classList.contains("none")){
+
+  }
+  else{
+    levelw.classList.add("none")
+  }
+}
+levelw.classList.add("none")
 
 // reloadscore(iscore+1)
 
@@ -562,7 +581,7 @@ function restarti(bool = false){
    if (!bool){ reloadscore(0);topause(false)}
 }
 
-restart.addEventListener("click",e=>restarti())
+restart.addEventListener("click",e=>{levelw.classList.remove("none")})
 rh.addEventListener("click",e=>{setHighScore(0);reloadscore(0)})
 //!  Main
 
@@ -824,8 +843,8 @@ function controlCar(e){
         yourlaw.position.x += leftspeed
       }
       if (fly){
-        if (yourlaw.quaternion.z > 0){yourlaw.quaternion.z = 0}
-        if (yourlaw.quaternion.z <= Number(`-${nity}`)){}else{yourlaw.quaternion.z -= anginc}
+        if (yourlaw.quaternion.z < 0){yourlaw.quaternion.z = 0}
+        if (yourlaw.quaternion.z >= nity){}else{yourlaw.quaternion.z += anginc}
       }
     }else if(e == "ArrowLeft"){
       if (yourlaw.position.x <= Number(`-${lll}`)){yourlaw.position.x = Number(`-${lll}`)}else{
@@ -838,8 +857,8 @@ function controlCar(e){
         
       }
       if (fly){
-        if (yourlaw.quaternion.z < 0){yourlaw.quaternion.z = 0}
-        if (yourlaw.quaternion.z >= nity){}else{yourlaw.quaternion.z += anginc}
+        if (yourlaw.quaternion.z > 0){yourlaw.quaternion.z = 0}
+        if (yourlaw.quaternion.z <= Number(`-${nity}`)){}else{yourlaw.quaternion.z -= anginc}
       }
     }else{
       // yourlaw.quaternion.y = 0
@@ -1030,9 +1049,9 @@ function animate(){
     
     
     if (yourlaw.quaternion.z > 0){
-      yourlaw.quaternion.z -= 0.001
+      yourlaw.quaternion.z -= 0.002
     }else if (yourlaw.quaternion.z < 0){
-      yourlaw.quaternion.z += 0.001
+      yourlaw.quaternion.z += 0.002
     }
     
     if (yourlaw.quaternion.y > 0){
@@ -1126,4 +1145,4 @@ if (GetRegularUser()){
  }
 }
 
-document.body.addEventListener("keydown",playclick )
+document.body.addEventListener("keyup",playclick )

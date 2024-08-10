@@ -260,6 +260,21 @@ wrapper{
   display: grid;
   place-items: center;
 }
+.levelw{
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.925);
+  gap: 20px;
+}
+.level{
+  padding-block: 10px;
+  font-size: 20px;
+}
 @keyframes slideback {
   0%{
     translate: 0px 0;
