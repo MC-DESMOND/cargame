@@ -11,7 +11,7 @@
 #        | |_| | |_| | |_| | |_| | |___
 #        |____/ \___/|____/ \____|_____|
 
-$ ■■■■■■■■■■■ DESDROID INC ®️ ■■■■■■■■■■■
+* ■■■■■■■■■■■ DESDROID INC ®️ ■■■■■■■■■■■
      
 */
 
@@ -48,6 +48,7 @@ var fly = false
 
 const panel = document.getElementById('panel')
 const audio = document.createElement("audio")
+const clicka = document.createElement("audio")
 const logo = document.getElementById("logo")
 const score = document.getElementById("score")
 const highscore = document.getElementById("highscore")
@@ -65,10 +66,18 @@ const ivw = document.getElementById("ivw")
 const ttc = document.getElementById("ttc")
 
 document.body.appendChild(audio)
+document.body.appendChild(clicka)
 audio.src = '/bt/VI.mp3'
+clicka.src = '/bt/click.wav'
 audio.volume -= 0.4
 var lim = 50
 audio.loop = true
+
+function playclick(){
+  clicka.pause()
+  clicka.currentTime = 0
+  clicka.play()
+}
 
 const treegltf = "bt/tree2.glb"
 function Main(){
@@ -329,9 +338,9 @@ function buildTree(xmin){
 
   new GLTFLoader().load(treegltf ,e=>{
     tree = e.scene
-    tree.scale.add(new three.Vector3(width,height,height))
+    tree.scale.add(new three.Vector3(width,height,width))
     treelaw = new cannon.Body({shape: new cannon.Box(new cannon.Vec3(width,height))})
-    tree.position.x -= xmin
+    tree.position.x -= xmin 
     tree.position.z = 1-(((trees.length)*(width+300))+width)
     tree.position.y += ((height)+(height/2))-ctop
 
@@ -484,8 +493,8 @@ class Enys{
       updateObj(this.lawlist[o],this.enyslist[o])
       if (this.rotatez){
         this.enyslist[o].rotation.z += this.rotatespeed
-        this.enyslist[o].rotation.y += this.rotatespeed+0.5
-        this.enyslist[o].rotation.x += this.rotatespeed+1
+        this.enyslist[o].rotation.y += this.rotatespeed
+        this.enyslist[o].rotation.x += this.rotatespeed   
         updateLaw(this.lawlist[o],this.enyslist[o])
         }
     }}
@@ -573,6 +582,7 @@ var  bss = []
 
 var ana
 window.addEventListener("click",()=>{
+  playclick()
   try{
     if (!ana){ana = new ANA(audio)}
     
@@ -588,7 +598,6 @@ window.addEventListener("click",()=>{
     }
   }
 })
-// window.addEventListener("keydown",start )
 
 
 
@@ -1109,7 +1118,7 @@ if (GetRegularUser()){
  ivw.classList.add("none")
  Main()
 }else{
- ivw.onclick = e=>{introVid.play();ttc.classList.add("none")}
+ ivw.onclick = e=>{playclick();introVid.play();ttc.classList.add("none")}
 
  introVid.onpause = function () {
    SetRegularUser(true)
@@ -1117,3 +1126,4 @@ if (GetRegularUser()){
  }
 }
 
+document.body.addEventListener("keydown",playclick )
