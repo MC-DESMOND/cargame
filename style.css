@@ -248,9 +248,9 @@ wrapper{
 }
 .introvid{
   width: 100%;
-  height: 115%;
+  height: 100%;
   object-fit:cover;
-  translate: 0 -15%;
+  position: fixed;
 }
 .ivw{
   z-index: 100;
@@ -273,7 +273,7 @@ wrapper{
 }
 .ttc{
   position: absolute;
-  background-color: rgba(0, 0, 0, 0.849);
+  background-color: rgba(0, 0, 0, 0.993);
   width: 100%;
   height: 100%;
   display: flex;
