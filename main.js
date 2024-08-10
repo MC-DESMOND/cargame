@@ -1093,7 +1093,7 @@ function GetRegularUser(){
  }
  
 }
-SetRegularUser(false)
+// SetRegularUser(false)
 if (GetRegularUser()){
  ivw.classList.add("none")
  Main()
