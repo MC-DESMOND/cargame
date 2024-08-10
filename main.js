@@ -405,6 +405,8 @@ class Enys{
   enyGeo
   incScore = true
   length
+  rotatez = false
+  rotatespeed = 0.01
   objectDict = {
     circle: three.CircleGeometry,
     box: three.BoxGeometry,
@@ -412,7 +414,7 @@ class Enys{
   }
   isgem = false
   rz = 0
-  constructor(ycoord,xmax,length,texture,diameter,object,gravitate = true ,rz = 0,isgem=false){
+  constructor(ycoord,xmax,length,texture,diameter,object,gravitate = true ,rz = 0,isgem=false ,rotateZ = false){
     this.xmax = xmax
     this.ycoord = ycoord
     this.texture = texture
@@ -421,6 +423,7 @@ class Enys{
     this.length = length
     this.isgem = isgem
     this.rz = rz
+    this.rotatez = rotateZ
     this.created = false
     this.mass = gravitate ? 10 : 0
     this.enyMat = new three.MeshPhysicalMaterial({map:this.texture})
@@ -479,6 +482,11 @@ class Enys{
         if (this.incScore){reloadscore(iscore+1)}
       }
       updateObj(this.lawlist[o],this.enyslist[o])
+      if (this.rotatez){
+        this.enyslist[o].rotation.z += this.rotatespeed
+        this.enyslist[o].rotation.y += this.rotatespeed
+        updateLaw(this.lawlist[o],this.enyslist[o])
+        }
     }}
   }
 }
@@ -487,7 +495,9 @@ var enys = 100
 var gems = 100
 var landEnys = new Enys((100/2)-ctop,lll,enys,new three.TextureLoader().load(rockImg),100,"box",true)
 landEnys.create()
-var airEnys = new Enys(flymax,lll,enys,new three.TextureLoader().load(skyImg),100,"poly",false,80*2)
+var airEnys = new Enys(flymax,lll,enys,new three.TextureLoader().load(skyImg),100,"box",false,80*2,false,true)
+
+
 var gemlEnys = new Enys((100/2)-ctop,lll,gems,new three.TextureLoader().load(skyImg),100,"poly",true,80*2,true)
 var gemaEnys = new Enys(flymax,lll,gems,new three.TextureLoader().load(skyImg),100,"poly",false,80*2,true)
 gemaEnys.gap = Math.ceil(gemaEnys.gap/2)
@@ -784,7 +794,7 @@ groundlaw.position.z = l
 
 
 function controlCar(e){
-  if(running){var leftspeed = 20
+  if(running){var leftspeed = 30
   var anginc = 0.01
   var nity = 0.3
   var t = document.getElementById("T")
