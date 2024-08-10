@@ -484,7 +484,8 @@ class Enys{
       updateObj(this.lawlist[o],this.enyslist[o])
       if (this.rotatez){
         this.enyslist[o].rotation.z += this.rotatespeed
-        this.enyslist[o].rotation.y += this.rotatespeed
+        this.enyslist[o].rotation.y += this.rotatespeed+0.5
+        this.enyslist[o].rotation.x += this.rotatespeed+1
         updateLaw(this.lawlist[o],this.enyslist[o])
         }
     }}
