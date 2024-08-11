@@ -231,6 +231,11 @@ function Recoil(){
   
   
 }}
+function start(){
+  if (paused){
+    levelw.classList.remove("none")
+  }
+}
 
 
 class BUILDINGS{
@@ -386,14 +391,21 @@ function topause(bool,crashed = false){
     panel.style.opacity = "1"
     pauseshow.innerText = "START"
     panel.style.height = "100%"
+    
     renp()
 
+    if (crashed){
+      restarti(true)
+    }
+    
+
   }else{
+    
     if (pauseshow.innerText.trim().toLowerCase() == "crashed"){
       if(you){
         you.position.z = yi
         updateLaw(yourlaw,you)
-      }
+      } 
       reloadscore(0)
       Recoil()
       pspeed = 10
@@ -412,10 +424,12 @@ function topause(bool,crashed = false){
   }
   if (crashed){
     pauseshow.innerText = "CRASHED"
-    restarti(true)
   }
   
-  paused = bool
+   paused = bool
+  
+  
+  
 }
 
 
@@ -439,7 +453,8 @@ class Enys{
   objectDict = {
     circle: three.CircleGeometry,
     box: three.BoxGeometry,
-    poly: three.ConeGeometry
+    poly: three.ConeGeometry,
+    sphere: three.SphereGeometry 
   }
   isgem = false
   rz = 0
@@ -525,7 +540,7 @@ var enys = 100
 var gems = 100
 var landEnys = new Enys((100/2)-ctop,lll,enys,new three.TextureLoader().load(rockImg),100,"box",true)
 landEnys.create()
-var airEnys = new Enys(flymax,lll,enys,new three.TextureLoader().load(skyImg),100,"box",false,80*2,false,true)
+var airEnys = new Enys(flymax,lll,enys,new three.TextureLoader().load(skyImg),100,"sphere",false,80*2,false,true)
 
 
 var gemlEnys = new Enys((100/2)-ctop,lll,gems,new three.TextureLoader().load(skyImg),100,"poly",true,80*2,true)
@@ -575,9 +590,11 @@ function reloadscore(num){
 }
 
 reloadscore(0)
-
+var ibz = -10000
 function restarti(bool = false){
-
+  if(brige)
+    {brige.position.z = ibz; console.log("bz: ",brige.position.z);
+    }
   airEnys.delete()
   landEnys.delete()
   gemaEnys.delete()
@@ -595,12 +612,13 @@ function restarti(bool = false){
     yourlaw.position.y = 0
     updateObj(yourlaw,you)
   }
-   
+  
   Recoil()
    if (!bool){ reloadscore(0);topause(false)}
+   
 }
 
-restart.addEventListener("click",e=>{levelw.classList.remove("none")})
+restart.addEventListener("click",e=>{start()})
 rh.addEventListener("click",e=>{setHighScore(0);reloadscore(0)})
 //!  Main
 
@@ -820,6 +838,17 @@ class YOURS{
 
 var youl = new YOURS('car-img')
 youl.loadCar()
+
+var brige
+new GLTFLoader().load("./bt/brige.glb",gltf=>{
+  brige = gltf.scene
+  var width =  200
+  var height = 200
+  brige.scale.copy(new three.Vector3(width,height,width))
+  brige.position.y = (height/2)-ctop
+  brige.position.z = ibz 
+  scene.add(brige)
+})
 
 
 
@@ -1051,6 +1080,13 @@ function animate(){
   if (audio.paused && !ap){
     try{audio.play()}catch(DOMException){}
   }
+
+  if (brige ){if (brige.position.z < 200){
+    brige.position.z += speed
+  }else{
+    // brige.position.z -= view
+  }
+}
 
   if (sp){
     if (pspeed <= 10 ){
