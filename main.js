@@ -61,7 +61,7 @@ const exp = document.getElementById("exp")
 const pbar = document.getElementById("pbspan")
 const pauseshow = document.getElementById("s")
 const restart = document.getElementById("restart")
-const introVid = document.getElementById("intro-vid")
+const introVid = document.createElement("video")
 const ivw = document.getElementById("ivw")
 const ttc = document.getElementById("ttc")
 const levels = document.querySelectorAll(".level")
@@ -70,6 +70,7 @@ document.body.appendChild(audio)
 document.body.appendChild(clicka)
 audio.src = '/bt/VI.mp3'
 clicka.src = '/bt/click.wav'
+
 audio.volume -= 0.4
 var lim = 50
 audio.loop = true
@@ -540,7 +541,7 @@ var enys = 100
 var gems = 100
 var landEnys = new Enys((100/2)-ctop,lll,enys,new three.TextureLoader().load(rockImg),100,"box",true)
 landEnys.create()
-var airEnys = new Enys(flymax,lll,enys,new three.TextureLoader().load(skyImg),100,"sphere",false,80*2,false,true)
+var airEnys = new Enys(flymax,lll,enys,new three.TextureLoader().load(rockImg),100,"sphere",false,80*2,false,true)
 
 
 var gemlEnys = new Enys((100/2)-ctop,lll,gems,new three.TextureLoader().load(skyImg),100,"poly",true,80*2,true)
@@ -1142,7 +1143,7 @@ function animate(){
   if(ana){
     var num = Math.ceil(ana.Scale(200,100))
     logo.style.width = num+"px"
-    sun.intensity = Math.ceil(ana.Scale(300000000,10000000))
+    // sun.intensity = Math.ceil(ana.Scale(300000000,10000000))
   }
 
   
@@ -1188,12 +1189,20 @@ function GetRegularUser(){
  }
  
 }
-// SetRegularUser(false)
+SetRegularUser(false)
 if (GetRegularUser()){
  ivw.classList.add("none")
  Main()
 }else{
- ivw.onclick = e=>{playclick();introVid.play();ttc.classList.add("none")}
+
+ ttc.onclick = e=>{
+  playclick()
+  introVid.classList.add("introvid")
+  introVid.src = "./bt/intro.mp4"
+  ivw.appendChild(introVid)
+  introVid.play()
+  ttc.classList.add("none")
+}
 
  introVid.onpause = function () {
    SetRegularUser(true)
