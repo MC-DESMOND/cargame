@@ -49,21 +49,21 @@ import * as cannon from 'cannon-es'
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
  
-import groundImg from './bt/road.png'
-import rockImg from './bt/rock.png'
-import skyImg from './bt/sky.png'
-import CITYView from './bt/bg.png'
+import groundImg from './assets/road.png'
+import rockImg from './assets/rock.png'
+import skyImg from './assets/sky.png'
+import CITYView from './assets/bg.png'
 
-import bt1 from './bt/bt1.png'
-import bt2 from './bt/bt2.png'
-import bt3 from './bt/bt3.png'
-import bt4 from './bt/bt4.png'
-import bt5 from './bt/bt5.png'
-import bt6 from './bt/bt6.png' 
-import bt7 from './bt/bt7.png'
-import bt8 from './bt/bt8.png'
-import bt9 from './bt/bt9.png'
-import bt0 from './bt/bt0.png'
+import bt1 from './assets/bt1.png'
+import bt2 from './assets/bt2.png'
+import bt3 from './assets/bt3.png'
+import bt4 from './assets/bt4.png'
+import bt5 from './assets/bt5.png'
+import bt6 from './assets/bt6.png' 
+import bt7 from './assets/bt7.png'
+import bt8 from './assets/bt8.png'
+import bt9 from './assets/bt9.png'
+import bt0 from './assets/bt0.png'
 
 var running = false
 var row = false
@@ -71,8 +71,8 @@ var paused = false
 var fly = false
 
 const panel = document.getElementById('panel')
-const audio = document.createElement("audio")
-const clicka = document.createElement("audio")
+const audio = document.getElementById("bgaudio")
+const clicka = document.getElementById("clickaudio")
 const logo = document.getElementById("logo")
 const score = document.getElementById("score")
 const highscore = document.getElementById("highscore")
@@ -85,15 +85,14 @@ const exp = document.getElementById("exp")
 const pbar = document.getElementById("pbspan")
 const pauseshow = document.getElementById("s")
 const restart = document.getElementById("restart")
-const introVid = document.createElement("video")
+const introVid = document.getElementById("intro-vid")
 const ivw = document.getElementById("ivw")
 const ttc = document.getElementById("ttc")
 const levels = document.querySelectorAll(".level")
 const levelw = document.getElementById("levelw")
-document.body.appendChild(audio)
-document.body.appendChild(clicka)
-audio.src = '/bt/VI.mp3'
-clicka.src = '/bt/click.wav'
+
+// audio.src = '/assets/VI.mp3'
+// clicka.src = '/assets/click.wav'
 
 audio.volume -= 0.4
 var lim = 50
@@ -105,7 +104,7 @@ function playclick(){
   clicka.play()
 }
 
-const treegltf = "bt/tree2.glb"
+const treegltf = "assets/tree2.glb"
 function Main(){
 var buildingsTex = []
 
@@ -145,7 +144,7 @@ const rh = document.getElementById("rh")
 const audio2 = document.createElement("audio")
 
 document.body.appendChild(audio2)
-audio2.src = '/bt/carcrash.wav'
+audio2.src = '/assets/carcrash.wav'
 audio2.volume -= 0.1
 const clock = new three.Clock();
 control.update()
@@ -821,7 +820,7 @@ class YOURS{
             if (paused){}else{
               audio2.play() 
               topause(true,true)
-              exp.src = "./bt/explode2.gif"
+              exp.src = "./assets/explode2.gif"
               exp.classList.remove("none")
               yourlaw.position.x = 0
               Recoil()
@@ -865,7 +864,7 @@ var youl = new YOURS('car-img')
 youl.loadCar()
 
 var brige
-new GLTFLoader().load("./bt/brige.glb",gltf=>{
+new GLTFLoader().load("./assets/brige.glb",gltf=>{
   brige = gltf.scene
   var width =  200
   var height = 200
@@ -886,7 +885,7 @@ cac.addEventListener("click",e=>{
   load(true)
   carc.classList.remove("none")
 })
-// LoadYou('/bt/lambo.glb')
+// LoadYou('/assets/lambo.glb')
 
 
 tinp.reverse()
@@ -1214,7 +1213,7 @@ function GetRegularUser(){
  }
  
 }
-SetRegularUser(false)
+// SetRegularUser(false)
 if (GetRegularUser()){
  ivw.classList.add("none")
  Main()
@@ -1222,9 +1221,6 @@ if (GetRegularUser()){
 
  ttc.onclick = e=>{
   playclick()
-  introVid.classList.add("introvid")
-  introVid.src = "./bt/intro.mp4"
-  ivw.appendChild(introVid)
   introVid.play()
   ttc.classList.add("none")
 }
