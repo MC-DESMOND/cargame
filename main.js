@@ -19,6 +19,30 @@
 
 import './style.css'
 
+
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyC1FPYQo3YtojbV9hFP9KCVDsY6oErotjI",
+  authDomain: "rock-dodge.firebaseapp.com",
+  projectId: "rock-dodge",
+  storageBucket: "rock-dodge.appspot.com",
+  messagingSenderId: "238166393804",
+  appId: "1:238166393804:web:bc26177b13c676cc681369",
+  measurementId: "G-PSM6G0KHWN"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+
+
 import * as three from 'three'
 import * as cannon from 'cannon-es'
 
