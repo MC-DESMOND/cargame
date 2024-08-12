@@ -1025,6 +1025,7 @@ function AntiGlitch(){
 
   }
 }
+// setHighScore(5453)
 
 function animate(){
   requestAnimationFrame(animate)
@@ -1189,7 +1190,7 @@ function GetRegularUser(){
  }
  
 }
-// SetRegularUser(false)
+SetRegularUser(false)
 if (GetRegularUser()){
  ivw.classList.add("none")
  Main()
