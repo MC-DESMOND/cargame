@@ -309,10 +309,8 @@ class BUILDINGS{
     var backelzfrontzabs
     if (!paused){if (o > 0){
       backelzfrontzabs = this.buildingslaw[o-1].position.z-this.buildingslaw[o].position.z
-      console.log("backelzfrontzabs init: "+o+": ",(this.buildingslaw[o-1].position.z-this.buildingslaw[o].position.z));
      }else{
       backelzfrontzabs = this.buildingslaw[this.buildingslaw.length-1].position.z-this.buildingslaw[o].position.z
-      console.log("backelzfrontzabs init "+o+": ",(this.buildingslaw[this.buildingslaw.length-1].position.z-this.buildingslaw[o].position.z));
     }
     backelzfrontzabs -= this.width
 
@@ -322,8 +320,7 @@ class BUILDINGS{
     
     // this.buildingslaw[o].position.z -= (backelzfrontzabs - this.gap)
     
-    console.log("backelzfrontzabs: "+o+": ",backelzfrontzabs-this.gap);
-    console.log("pos Z: "+o+": ",this.buildingslaw[o].position.z );
+
     }
     updateObj(this.buildingslaw[o],this.buildings[o])
     }
@@ -353,7 +350,6 @@ class ANA{
       this.frequencyData = new Uint8Array(this.analyser.frequencyBinCount);
       
     }catch(e){
-      console.log("ERROR: ",e);
       this.error = true
     }
   }
@@ -372,7 +368,6 @@ class ANA{
       var percentage = ((avg/100)*this.height)+this.low
       return percentage
     }else{
-      console.log("ERROR");
       return low
     }
 
@@ -498,7 +493,6 @@ class Enys{
     this.enyMat = new three.MeshPhysicalMaterial({map:this.texture})
     this.enyGeo = new this.objectDict[object](...[diameter,diameter,diameter,diameter])
 
-    console.log("mass",this.mass);
     
 
   }
@@ -618,7 +612,7 @@ reloadscore(0)
 var ibz = -10000
 function restarti(bool = false){
   if(brige)
-    {brige.position.z = ibz; console.log("bz: ",brige.position.z);
+    {brige.position.z = ibz; 
     }
   airEnys.delete()
   landEnys.delete()
@@ -806,15 +800,13 @@ class YOURS{
       yourlaw.position.z = yi
 
       yourlaw.addEventListener("collide",e=>{
-        console.log("colide",e);
-        console.log("colide id",e.body.id);
+        
         if (gemslawsid.includes(e.body.id)){
           reloadscore(iscore+1)
           var gem = law.getBodyById(e.body.id)
           gem.position.z = 100
         }
         if (enyslawsid.includes(e.body.id)){
-          console.log("includes");
 
           hits += 1
           
@@ -901,7 +893,6 @@ function controlCar(e){
   var nity = 0.3
   var t = document.getElementById("T")
   var flyyou = document.querySelectorAll(".fly")
-  console.log(e)
   
   if (you)
   { 
@@ -947,7 +938,6 @@ function controlCar(e){
     }
     }if (e == " " || e == "p"){
       topause(!paused) 
-      console.log(paused);   
       playclick()
     }
     if (e.toLowerCase() == "x"){
@@ -963,7 +953,6 @@ function controlCar(e){
       if (e.toLowerCase() == "t"){
       fly = !fly
       playclick()
-      console.log("fly: ",fly);
 
       }
     }else{
@@ -1121,7 +1110,6 @@ function animate(){
     }else{
       pspeed -= 1
     }
-    console.log(speed);
     
   }
   if (speed > lim){
