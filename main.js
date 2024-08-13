@@ -93,9 +93,9 @@ const levelw = document.getElementById("levelw")
 
 // audio.src = '/assets/VI.mp3'
 // clicka.src = '/assets/click.wav'
-
+var ilim = 200
 audio.volume -= 0.4
-var lim = 50
+var lim = ilim
 audio.loop = true
 
 function playclick(){
@@ -104,7 +104,7 @@ function playclick(){
   clicka.play()
 }
 
-const treegltf = "assets/tree2.glb"
+const treegltf = "/assets/tree2.glb"
 function Main(){
 var buildingsTex = []
 
@@ -1094,7 +1094,7 @@ function animate(){
         yourlaw.mass = 10
       }
       // yourlaw.mass = 10
-      lim = 50
+      lim = ilim
   }
 
   scene.position.x = 1-yourlaw.position.x
@@ -1170,7 +1170,7 @@ function animate(){
     // sun.intensity = Math.ceil(ana.Scale(300000000,10000000))
   }
 
-  
+  onresizeWin()
 
   updateObj(groundlaw,ground)
   if (you)
