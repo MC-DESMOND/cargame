@@ -1214,17 +1214,18 @@ function GetRegularUser(){
  }
  
 }
+var sk = document.getElementById("skip")
 // SetRegularUser(false)
 if (GetRegularUser()){
  ivw.classList.add("none")
  Main()
 }else{
-
+sk.classList.add("none")
  ttc.onclick = e=>{
   playclick()
   introVid.play()
   ttc.classList.add("none")
-  var sk = document.getElementById("skip")
+  sk.classList.remove("none")
   sk.onclick = e=>{
     introVid.pause()
   }
