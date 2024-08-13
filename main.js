@@ -64,6 +64,7 @@ import bt7 from './assets/bt7.png'
 import bt8 from './assets/bt8.png'
 import bt9 from './assets/bt9.png'
 import bt0 from './assets/bt0.png'
+import { doc } from 'firebase/firestore/lite';
 
 var running = false
 var row = false
@@ -1223,6 +1224,10 @@ if (GetRegularUser()){
   playclick()
   introVid.play()
   ttc.classList.add("none")
+  var sk = document.getElementById("skip")
+  sk.onclick = e=>{
+    introVid.pause()
+  }
 }
 
  introVid.onpause = function () {

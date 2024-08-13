@@ -269,6 +269,16 @@ wrapper{
   /* background-color: cyan; */
   /* padding: 3px; */
 }
+.skip{
+  position: absolute;
+  z-index: 20;
+  padding-block:10px;
+  font-size: 20px;
+  right: 20px;
+  bottom: 20px;
+  background-color: rgba(0, 0, 0, 0.789);
+  border-radius: 25px;
+}
 .ivw{
   
   z-index: 100;
