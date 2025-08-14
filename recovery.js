@@ -48,7 +48,7 @@ import * as cannon from 'cannon-es'
 
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
-
+ 
 import groundImg from './assets/road.png'
 import rockImg from './assets/rock.png'
 import skyImg from './assets/sky.png'
@@ -137,7 +137,7 @@ var flymax = 300*4
 const scene = new three.Object3D();
 const world = new three.Scene();
 const canvas = document.getElementById("app")
-const camera = new three.PerspectiveCamera(75,( window.innerWidth/window.innerHeight)+100,0.1,view)
+const camera = new three.PerspectiveCamera(75, window.innerWidth/window.innerHeight,0.1,view)
 const display  = new three.WebGLRenderer({canvas:canvas})
 const control = new OrbitControls(camera,display.domElement)
 const law = new cannon.World({gravity:new cannon.Vec3(0,-10000,0)})
@@ -292,11 +292,6 @@ class BUILDINGS{
     building.position.y = (height/2)-ctop
 
     updateLaw(buildinglaw,building)
-    building.traverse(function(node){
-      if (node.isMesh){
-        node.castShadow = true;
-      }
-    })
     scene.add(building)
     law.addBody(buildinglaw)
     this.buildingslaw.push(buildinglaw)
@@ -393,11 +388,7 @@ function buildTree(xmin){
     tree.position.x -= xmin 
     tree.position.z = 1-(((trees.length)*(width+300))+width)
     tree.position.y += ((height)+(height/2))-ctop
-    tree.traverse(function(node){
-      if (node.isMesh){
-        node.castShadow = true;
-      }
-    })
+
     updateLaw(treelaw,tree)
     scene.add(tree)
     law.addBody(treelaw)
@@ -539,11 +530,6 @@ class Enys{
       this.enyslist.push(eny)
       this.lawlist.push(enylaw)
       if (this.isgem){gemslawsid.push(enylaw.id)}else{enyslawsid.push(enylaw.id)}
-      eny.traverse(function(node){
-        if (node.isMesh){
-          node.castShadow = true;
-        }
-      })
   }
 
   Update(xmax = null){
@@ -794,18 +780,13 @@ class YOURS{
       var d = 10
 
       you.scale.copy(new three.Vector3(width,height,width))
-      
+
       yourlaw = new cannon.Body({
-        shape:new cannon.Box(new cannon.Vec3(you.scale.x,you.scale.y,you.scale.z ))
+        shape:new cannon.Box(new cannon.Vec3(width-d,height,width-d))
         ,mass:10
       })
 
       yourlaw.position.y += (height/2)-ctop
-      you.traverse(function(node){
-        if (node.isMesh){
-          node.castShadow = true;
-        }
-      })
       scene.add(you)
       law.addBody(yourlaw)
       yourlaw.position.z = yi
@@ -1016,13 +997,11 @@ document.querySelectorAll(".arrow").forEach(ar=>{
 })
 
 function onresizeWin(){
-  var q =0
-   
-  camera.aspect =( (window.innerWidth)/(window.innerHeight))
+  camera.aspect = innerWidth/innerHeight
   camera.updateProjectionMatrix()
-  display.setSize(innerWidth+q,innerHeight+q)
+  display.setSize(innerWidth,innerHeight)
   control.domElement =  display.domElement
-  control.object = camera 
+  control.object = camera
 }
 
 
